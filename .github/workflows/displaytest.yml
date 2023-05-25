@@ -1,22 +1,18 @@
 name: Test
 on:
   workflow_dispatch:
-env:
-  # Setting an environment variable with the value of a configuration variable
 
-  environment: qa
 jobs:
   display-variables:
     name: Test
     
     runs-on: ubuntu-latest
-   
+    environment: qa
     steps:
     - name: Use variables
       run: |
-        echo "repository variable : ${{ env.RESOURCE_GROUP_NAME }}"
+        echo "repository variable : ${{ vars.RESOURCE_GROUP_NAME }}"
        
-      env:
        
-        environment: qa
+        
        
