@@ -34,6 +34,11 @@ jobs:
           resourceGroupName: ${{ vars.RESOURCE_GROUP_NAME }}
           template: deploy.json
           parameters: parameters.json
+          parametersJson: |
+           {
+            "AdditionalParameter1": "value1",
+            "AdditionalParameter2": "value2"
+           }
 
       - name: Zip logicapp files
         run: (cd ${{ env.LOGICAPP_DIRECTORY }} && zip -rq ../${{ github.run_id }}.zip ./* -x /*workflow-designtime/*)
