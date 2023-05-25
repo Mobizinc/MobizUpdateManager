@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
 env:
   # Setting an environment variable with the value of a configuration variable
-  env_var: ${{ vars.RESOURCE_GROUP_NAME }}
 
+  environment: qa
 jobs:
   display-variables:
     name: Test
@@ -14,9 +14,9 @@ jobs:
     steps:
     - name: Use variables
       run: |
-        echo "repository variable : $REPOSITORY_VAR"
+        echo "repository variable : ${{ vars.RESOURCE_GROUP_NAME }}"
        
       env:
-        REPOSITORY_VAR: ${{ vars.RESOURCE_GROUP_NAME }}
+       
         environment: qa
        
