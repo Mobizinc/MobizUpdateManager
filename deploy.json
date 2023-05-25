@@ -401,6 +401,18 @@
             "sku": {
                 "name": "Standard"
             }
+        },
+        {
+            "name": "[concat(parameters('StorageAccountName'), '/default/schedulemonitorqueue')]",
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2021-08-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountName'))]"
+            ],
+            "properties": {},
+            "sku": {
+                "name": "Standard"
+            }
         }
 
     ]

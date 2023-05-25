@@ -1,0 +1,81 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Create_HTML_table": {
+                "inputs": {
+                    "format": "HTML",
+                    "from": "@body('Parse_JSON')?['vmIds']"
+                },
+                "runAfter": {
+                    "Parse_JSON": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Table"
+            },
+            "Parse_JSON": {
+                "inputs": {
+                    "content": "@triggerOutputs()?['body']?['messageText']",
+                    "schema": {
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "nextRun": {
+                                "type": "string"
+                            },
+                            "vmIds": {
+                                "type": "array"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "runAfter": {},
+                "type": "ParseJson"
+            },
+            "Send_an_email_(V2)": {
+                "inputs": {
+                    "body": {
+                        "Body": "<p>Targetted VMs<br>\n@{body('Create_HTML_table')}</p>",
+                        "Importance": "Normal",
+                        "Subject": "Upcoming Update Management Schedule : @{body('Parse_JSON')?['name']}   at @{body('Parse_JSON')?['nextRun']}",
+                        "To": "roshanmarcus22@gmail.com; alvingeorge@gmail.com"
+                    },
+                    "host": {
+                        "connection": {
+                            "referenceName": "office365"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/v2/Mail"
+                },
+                "runAfter": {
+                    "Create_HTML_table": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "triggers": {
+            "When_messages_are_available_in_a_queue": {
+                "inputs": {
+                    "parameters": {
+                        "queueName": "schedulemonitorqueue"
+                    },
+                    "serviceProviderConfiguration": {
+                        "connectionName": "azurequeues",
+                        "operationId": "receiveQueueMessages",
+                        "serviceProviderId": "/serviceProviders/azurequeues"
+                    }
+                },
+                "type": "ServiceProvider"
+            }
+        }
+    },
+    "kind": "Stateless"
+}

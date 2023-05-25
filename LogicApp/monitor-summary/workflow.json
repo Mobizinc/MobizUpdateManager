@@ -1,0 +1,219 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "For_each": {
+                "actions": {
+                    "Condition": {
+                        "actions": {
+                            "Append_to_VMS_To_Query_-_First": {
+                                "inputs": {
+                                    "name": "VMs To Query",
+                                    "value": "@concat('Resource =~ \"',replace(substring(item(),indexOf(item(),'virtualMachines/')),'virtualMachines/',''),'\"')"
+                                },
+                                "runAfter": {},
+                                "type": "AppendToStringVariable"
+                            },
+                            "Set_variable": {
+                                "inputs": {
+                                    "name": "IsFirstRecord",
+                                    "value": "@false"
+                                },
+                                "runAfter": {
+                                    "Append_to_VMS_To_Query_-_First": [
+                                        "Succeeded"
+                                    ]
+                                },
+                                "type": "SetVariable"
+                            }
+                        },
+                        "else": {
+                            "actions": {
+                                "Append_to_VMS_To_Query_": {
+                                    "inputs": {
+                                        "name": "VMs To Query",
+                                        "value": "@concat(' or Resource =~ \"',replace(substring(item(),indexOf(item(),'virtualMachines/')),'virtualMachines/',''),'\"')"
+                                    },
+                                    "runAfter": {},
+                                    "type": "AppendToStringVariable"
+                                }
+                            }
+                        },
+                        "expression": {
+                            "and": [
+                                {
+                                    "equals": [
+                                        "@variables('IsFirstRecord')",
+                                        "@true"
+                                    ]
+                                }
+                            ]
+                        },
+                        "runAfter": {},
+                        "type": "If"
+                    }
+                },
+                "foreach": "@variables('VMs With ID')",
+                "runAfter": {
+                    "Is_First_Record": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Foreach"
+            },
+            "Is_First_Record": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "IsFirstRecord",
+                            "type": "boolean",
+                            "value": "@true"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "VMS_To_Query": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Parse_JSON": {
+                "inputs": {
+                    "content": "@triggerOutputs()?['body']?['messageText']",
+                    "schema": {
+                        "properties": {
+                            "runId": {
+                                "type": "string"
+                            },
+                            "virtualMachines": {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "runAfter": {},
+                "type": "ParseJson"
+            },
+            "Run_query_and_visualize_results": {
+                "inputs": {
+                    "body": " UpdateSummary | where ( @{variables('VMs To Query')}) | project Resource, Computer, tostring(CriticalUpdatesMissing), tostring(SecurityUpdatesMissing), tostring(OtherUpdatesMissing) ,TimeGenerated\n| summarize arg_max(TimeGenerated,*) by Resource  \n",
+                    "host": {
+                        "connection": {
+                            "referenceName": "azuremonitorlogs"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/visualizeQuery",
+                    "queries": {
+                        "resourcegroups": "mobizupdatemgr-dev-rg",
+                        "resourcename": "mobizupdatemgr-dev-la1",
+                        "resourcetype": "Log Analytics Workspace",
+                        "subscriptions": "158d9f92-ec1e-433e-8388-6f7157282c13",
+                        "timerange": "Last 7 days",
+                        "visType": "Html Table"
+                    }
+                },
+                "runAfter": {
+                    "For_each": [
+                        "Succeeded"
+                    ]
+                },
+                "runtimeConfiguration": {
+                    "staticResult": {
+                        "name": "Run_query_and_visualize_results0",
+                        "staticResultOptions": "Disabled"
+                    }
+                },
+                "type": "ApiConnection"
+            },
+            "Send_an_email_(V2)": {
+                "inputs": {
+                    "body": {
+                        "Body": "<p><br>\n@{base64ToString(body('Run_query_and_visualize_results')?['body'])}</p>",
+                        "Importance": "Normal",
+                        "Subject": "Update Summary For Run ID  : @{body('Parse_JSON')?['runId']}",
+                        "To": "roshanmarcus22@gmail.com; alvingeorge@gmail.com"
+                    },
+                    "host": {
+                        "connection": {
+                            "referenceName": "office365"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/v2/Mail"
+                },
+                "runAfter": {
+                    "Run_query_and_visualize_results": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            },
+            "VMS_To_Query": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "VMs To Query",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "VMs_With_ID": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "VMs_With_ID": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "VMs With ID",
+                            "type": "array",
+                            "value": "@body('Parse_JSON')?['virtualMachines']"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Parse_JSON": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "InitializeVariable"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "staticResults": {
+            "Run_query_and_visualize_results0": {
+                "outputs": {
+                    "headers": {},
+                    "statusCode": "OK"
+                },
+                "status": "Succeeded"
+            }
+        },
+        "triggers": {
+            "When_messages_are_available_in_a_queue": {
+                "inputs": {
+                    "parameters": {
+                        "queueName": "updatesummary"
+                    },
+                    "serviceProviderConfiguration": {
+                        "connectionName": "azurequeues",
+                        "operationId": "receiveQueueMessages",
+                        "serviceProviderId": "/serviceProviders/azurequeues"
+                    }
+                },
+                "type": "ServiceProvider"
+            }
+        }
+    },
+    "kind": "Stateful"
+}
