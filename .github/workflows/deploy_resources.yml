@@ -36,8 +36,8 @@ jobs:
           parameters: parameters.json
           parametersJson: |
            {
-            "AdditionalParameter1": "value1",
-            "AdditionalParameter2": "value2"
+            "StorageAccountName": "mobizupdatemgrdevsa45",
+            "LogicAppName": "mobizupdatemgr-dev-logicapp45"
            }
 
       - name: Zip logicapp files
