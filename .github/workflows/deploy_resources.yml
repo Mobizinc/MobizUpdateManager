@@ -24,7 +24,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    
+    - name: Use variables
+      run: |
+        echo "rg variable : ${{ vars.RESOURCE_GROUP_NAME }}"
 
     - name: Deploy ARM Template
       uses: azure/arm-deploy@v1
