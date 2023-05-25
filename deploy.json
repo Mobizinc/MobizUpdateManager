@@ -126,8 +126,9 @@
             "dependsOn": [
                 "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]",
                 "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('AutomationAccountName'), 'TurnOnVMs-UpdateStart')]",
-                "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('AutomationAccountName'), 'TurnOffVMs-UpdateEnds')]",
-                "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('AutomationAccountName'), 'UpdateManagement-PostScript')]"
+                "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('AutomationAccountName'), 'TurnOffVMs-UpdateEnds')]"
+                
+                
             ],
             "properties": {
                 "updateConfiguration": {
