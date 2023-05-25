@@ -1,4 +1,4 @@
-name: Deploy ARM Template and Run Azure PowerShell Commands
+name: Deploy Resources
 
 on:
   workflow_dispatch:
