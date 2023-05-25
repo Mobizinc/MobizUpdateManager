@@ -30,7 +30,7 @@ jobs:
       uses: azure/arm-deploy@v1
       with:
         subscription: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        resource-group: ${{ env.RESOURCE_GROUP_NAME }}
+        resource-group: ${{ vars.RESOURCE_GROUP_NAME }}
         template: deploy.json
         parameters: parameters.json
 
