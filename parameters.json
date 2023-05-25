@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "LogAnalyticsWorksSpaceName": {
+            "value": "mobizupdatemgr-dev-la135"
+        },
+        "AutomationAccountName": {
+            "value": "mobizupdatemgr-dev-aa35"
+        },
+        "AppServicePlanForLogicAppName": {
+            "value": "generic-logicapp-asp35"
+        },
+        "LogicAppName": {
+            "value": "mobizupdatemgr-dev-logicapp35"
+        },
+        "StorageAccountName": {
+            "value": "mobizupdatemgrdevsa35"
+        }
+    }
+}
