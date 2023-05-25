@@ -23,6 +23,14 @@
         "StorageAccountName": {
             "defaultValue": "mobizupdatemgrdevsa",
             "type": "String"
+        },
+        "RunbookUpdateEndsContent": {
+            "defaultValue": "",
+            "type": "String"
+        },
+         "RunbookUpdateStartContent": {
+            "defaultValue": "",
+            "type": "String"
         }
     },
     "variables": {},
@@ -84,8 +92,13 @@
                 "runbookType": "PowerShell",
                 "logVerbose": false,
                 "logProgress": false,
-                "logActivityTrace": 0
+                "logActivityTrace": 0,
+                "runbookContent": {
+                    "content": "[parameters('RunbookUpdateEndsContent')]"
+                }
             }
+                
+            
         },
         {
             "type": "Microsoft.Automation/automationAccounts/runbooks",
@@ -100,25 +113,13 @@
                 "runbookType": "PowerShell",
                 "logVerbose": false,
                 "logProgress": false,
-                "logActivityTrace": 0
+                "logActivityTrace": 0,
+                "runbookContent": {
+                    "content": "[parameters('RunbookUpdateStartContent')]"
+                }
             }
         },
-        {
-            "type": "Microsoft.Automation/automationAccounts/runbooks",
-            "apiVersion": "2022-08-08",
-            "name": "[concat(parameters('AutomationAccountName'), '/TurnOnVMs-UpdateEnds')]",
-            "location": "eastus2",
-            "dependsOn": [
-                "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
-            ],
-
-            "properties": {
-                "runbookType": "PowerShell",
-                "logVerbose": false,
-                "logProgress": false,
-                "logActivityTrace": 0
-            }
-        },
+       
         {
             "type": "Microsoft.Automation/automationAccounts/softwareUpdateConfigurations",
             "apiVersion": "2019-06-01",
