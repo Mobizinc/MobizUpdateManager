@@ -1,0 +1,407 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "LogAnalyticsWorksSpaceName": {
+            "defaultValue": "mobizupdatemgr-dev-la1",
+            "type": "String"
+        },
+
+        "AutomationAccountName": {
+            "defaultValue": "mobizupdatemgr-dev-aa",
+            "type": "String"
+        },
+
+        "AppServicePlanForLogicAppName": {
+            "defaultValue": "generic-logicapp-asp",
+            "type": "String"
+        },
+        "LogicAppName": {
+            "defaultValue": "mobizupdatemgr-dev-logicapp",
+            "type": "String"
+        },
+        "StorageAccountName": {
+            "defaultValue": "mobizupdatemgrdevsa",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "apiVersion": "2021-12-01-preview",
+            "name": "[parameters('LogAnalyticsWorksSpaceName')]",
+            "location": "eastus",
+
+            "properties": {
+                "sku": {
+                    "name": "pergb2018"
+                },
+                "retentionInDays": 30,
+                "features": {
+                    "enableLogAccessUsingOnlyResourcePermissions": true
+                },
+                "workspaceCapping": {
+                    "dailyQuotaGb": -1
+                },
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts",
+            "apiVersion": "2022-08-08",
+            "name": "[parameters('AutomationAccountName')]",
+            "location": "eastus2",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('LogAnalyticsWorksSpaceName'))]"
+            ],
+            "properties": {
+                "publicNetworkAccess": true,
+                "disableLocalAuth": false,
+                "sku": {
+                    "name": "Basic"
+                },
+                "encryption": {
+                    "keySource": "Microsoft.Automation",
+                    "identity": {}
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/runbooks",
+            "apiVersion": "2022-08-08",
+            "name": "[concat(parameters('AutomationAccountName'), '/TurnOffVMs-UpdateEnds')]",
+            "location": "eastus2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+            ],
+
+            "properties": {
+                "runbookType": "PowerShell",
+                "logVerbose": false,
+                "logProgress": false,
+                "logActivityTrace": 0
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/runbooks",
+            "apiVersion": "2022-08-08",
+            "name": "[concat(parameters('AutomationAccountName'), '/TurnOnVMs-UpdateStart')]",
+            "location": "eastus2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+            ],
+
+            "properties": {
+                "runbookType": "PowerShell",
+                "logVerbose": false,
+                "logProgress": false,
+                "logActivityTrace": 0
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/runbooks",
+            "apiVersion": "2022-08-08",
+            "name": "[concat(parameters('AutomationAccountName'), '/TurnOnVMs-UpdateEnds')]",
+            "location": "eastus2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+            ],
+
+            "properties": {
+                "runbookType": "PowerShell",
+                "logVerbose": false,
+                "logProgress": false,
+                "logActivityTrace": 0
+            }
+        },
+        {
+            "type": "Microsoft.Automation/automationAccounts/softwareUpdateConfigurations",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(parameters('AutomationAccountName'), '/EST-WIN-WEEKLY')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]",
+                "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('AutomationAccountName'), 'TurnOnVMs-UpdateStart')]",
+                "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('AutomationAccountName'), 'TurnOffVMs-UpdateEnds')]",
+                "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('AutomationAccountName'), 'UpdateManagement-PostScript')]"
+            ],
+            "properties": {
+                "updateConfiguration": {
+                    "operatingSystem": "Windows",
+                    "windows": {
+                        "includedUpdateClassifications": "Critical, Security, UpdateRollup, FeaturePack, ServicePack, Definition, Tools, Updates",
+                        "excludedKbNumbers": [],
+                        "includedKbNumbers": [],
+                        "rebootSetting": "IfRequired"
+                    },
+
+                    "targets": {
+                        "azureQueries": [
+                            {
+                                "scope": [
+                                    "/subscriptions/158d9f92-ec1e-433e-8388-6f7157282c13"
+                                ],
+                                "tagSettings": {
+                                    "tags": {
+                                        "Patch_Schedule": [
+                                            "EST-WIN-WEEKLY"
+                                        ]
+                                    },
+                                    "filterOperator": "All"
+                                },
+                                "locations": []
+                            }
+                        ]
+                    },
+                    "duration": "PT2H",
+                    "azureVirtualMachines": [],
+                    "nonAzureComputerNames": []
+                },
+                "tasks": {
+                    "preTask": {
+                        "source": "TurnOnVMs-UpdateStart",
+                        "parameters": {}
+                    },
+                    "postTask": {
+                        "source": "TurnOffVMs-UpdateEnds",
+                        "parameters": {}
+                    }
+                },
+                "scheduleInfo": {
+                "advancedSchedule": {
+                    "monthDays": [],
+                    "monthlyOccurrences": []
+                },
+                "timeZone": "America/New_York",
+                "startTime": "2023-06-24T17:19:00-04:00",
+                "expiryTime": "9999-12-31T18:59:00-05:00",
+                "interval": 2,
+                "frequency": "Week",
+                "weekDays": [
+                    "Saturday"
+                ]
+
+            }
+            }
+        },
+        {
+            "type": "Microsoft.OperationalInsights/workspaces/linkedservices",
+            "apiVersion": "2020-08-01",
+            "name": "[concat(parameters('LogAnalyticsWorksSpaceName'), '/Automation')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('LogAnalyticsWorksSpaceName'))]",
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+            ],
+            "properties": {
+                "resourceId": "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2022-09-01",
+            "name": "[parameters('AppServicePlanForLogicAppName')]",
+            "location": "East US 2",
+            "sku": {
+                "name": "WS1",
+                "tier": "WorkflowStandard",
+                "size": "WS1",
+                "family": "WS",
+                "capacity": 1
+            },
+            "kind": "elastic",
+            "properties": {
+                "perSiteScaling": false,
+                "elasticScaleEnabled": true,
+                "maximumElasticWorkerCount": 20,
+                "isSpot": false,
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0,
+                "zoneRedundant": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-09-01",
+            "name": "[parameters('LogicAppName')]",
+            "location": "East US 2",
+            "kind": "functionapp,workflowapp",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('AppServicePlanForLogicAppName'))]"
+            ],
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('LogicAppName'), '.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('LogicAppName'), '.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('AppServicePlanForLogicAppName'))]",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": false,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": false,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 0,
+                    "minimumElasticInstanceCount": 1,
+                    "functionsRuntimeScaleMonitoringEnabled": false
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": false,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "containerSize": 1536,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": true,
+                "redundancyMode": "None",
+                "publicNetworkAccess": "Enabled",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2021-02-01",
+            "name": "[concat(parameters('LogicAppName'), '/web')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('LogicAppName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountName'))]",
+                "[resourceId('Microsoft.Insights/components', concat(parameters('LogicAppName'),'-ai'))]"
+
+            ],
+            "properties": {
+                "appSettings": [
+                    {
+                        "name": "queuuri",
+                        "value": "queue.com"
+                    },
+                    {
+                        "name": "FUNCTIONS_EXTENSION_VERSION",
+                        "value": "~4",
+                        "slotSetting": false
+                    },
+                    {
+                        "name": "AzureWebJobsStorage",
+                        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', parameters('StorageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountName')), '2021-04-01').keys[0].value, ';EndpointSuffix=core.windows.net')]"
+                    },
+                    {
+                        "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                        "value": "[reference(concat(parameters('LogicAppName'),'-ai'), '2020-02-02').InstrumentationKey]",
+                        "slotSetting": false
+                    }
+
+                ]
+            }
+        },
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2020-02-02",
+            "name": "[concat(parameters('LogicAppName'),'-ai')]",
+            "location": "eastus2",
+            "dependsOn": [ "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('LogAnalyticsWorksSpaceName'))]" ],
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Redfield",
+                "Request_Source": "IbizaAIExtension",
+                "RetentionInDays": 90,
+                "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('LogAnalyticsWorksSpaceName'))]",
+                "IngestionMode": "LogAnalytics",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2022-09-01",
+            "name": "[parameters('StorageAccountName')]",
+            "location": "eastus2",
+
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "dnsEndpointType": "Standard",
+                "defaultToOAuthAuthentication": false,
+                "publicNetworkAccess": "Enabled",
+                "allowCrossTenantReplication": true,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": true,
+                "allowSharedKeyAccess": true,
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "requireInfrastructureEncryption": false,
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "name": "[concat(parameters('StorageAccountName'), '/default/updaterunprogress')]",
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2021-08-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountName'))]"
+            ],
+            "properties": {},
+            "sku": {
+                "name": "Standard"
+            }
+        },
+        {
+            "name": "[concat(parameters('StorageAccountName'), '/default/updatesummary')]",
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2021-08-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountName'))]"
+            ],
+            "properties": {},
+            "sku": {
+                "name": "Standard"
+            }
+        }
+
+    ]
+}
