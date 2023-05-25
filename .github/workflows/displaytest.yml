@@ -18,4 +18,5 @@ jobs:
        
       env:
         REPOSITORY_VAR: ${{ vars.RESOURCE_GROUP_NAME }}
+        environment: qa
        
