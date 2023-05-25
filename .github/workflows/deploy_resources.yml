@@ -2,6 +2,10 @@ name: Deploy ARM Template and Run Azure PowerShell Commands
 
 on:
   workflow_dispatch:
+   inputs:
+      environment:
+        description: 'Environment to apply'
+        required: true
 
 env:
   AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
