@@ -33,8 +33,8 @@ jobs:
         with:
           resourceGroupName: ${{ vars.RESOURCE_GROUP_NAME }}
           template: deploy.json
-          parameters: parameters.json
-          additionalArguments: "--parameters RunbookUpdateEndsContent=mobizupdatemgrdevsa45"
+          parameters: parameters.json RunbookUpdateEndsContent=mobizupdatemgrdevsa45
+         
          
 
       - name: Zip logicapp files
