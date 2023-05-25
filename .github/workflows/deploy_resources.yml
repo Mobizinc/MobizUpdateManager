@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: qa
     steps:
-      # - name: Checkout repository
-      #   uses: actions/checkout@v2
+       - name: Checkout repository
+         uses: actions/checkout@v2
         
       # - name: Create Azure cred variable
       #   run: |
@@ -24,9 +24,9 @@ jobs:
       #     automationAccountName=$(jq -r '.parameters.AutomationAccountName.value' parameters.json)
       #     echo "AutomationAccountName=$automationAccountName" >> $GITHUB_ENV
 
-      # - uses: azure/login@v1
-      #   with:
-      #     creds: ${{ env.AzureCreds }}
+       - uses: azure/login@v1
+         with:
+          creds: ${{ env.AzureCreds }}
 
     
 
