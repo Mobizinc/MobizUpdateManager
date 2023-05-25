@@ -7,7 +7,7 @@ jobs:
     name: Test
     
     runs-on: ubuntu-latest
-    environment: qa
+    
     steps:
     - name: Use variables
       run: |
