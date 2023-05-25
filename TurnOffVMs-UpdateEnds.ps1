@@ -50,7 +50,7 @@ param(
 #     -ApplicationId $ServicePrincipalConnection.ApplicationId `
 #     -CertificateThumbprint $ServicePrincipalConnection.CertificateThumbprint
 
-$AzureContext = (Connect-AzAccount -Identity -AccountId afc0f4c1-c47d-4f48-90cf-f982d7fec045).context
+$AzureContext = (Connect-AzAccount -Identity ).context
 $AzureContext = Set-AzContext -SubscriptionName $AzureContext.Subscription -DefaultProfile $AzureContext
 
 #If you wish to use the run context, it must be converted from JSON
