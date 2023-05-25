@@ -34,5 +34,6 @@ jobs:
        
         resourceGroupName: ${{ vars.RESOURCE_GROUP_NAME }}
         template: deploy.json
+        parameters: parameters.json
       
    
