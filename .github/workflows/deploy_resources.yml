@@ -21,6 +21,8 @@ jobs:
           echo "AzureCreds=$AzureCreds" >> $GITHUB_ENV
           logicAppName=$(jq -r '.parameters.LogicAppName.value' parameters.json)
           echo "LogicAppName=$logicAppName" >> $GITHUB_ENV
+          automationAccountName=$(jq -r '.parameters.AutomationAccountName.value' parameters.json)
+          echo "AutomationAccountName=$automationAccountName" >> $GITHUB_ENV
 
       - uses: azure/login@v1
         with:
@@ -33,7 +35,7 @@ jobs:
         with:
           resourceGroupName: ${{ vars.RESOURCE_GROUP_NAME }}
           template: deploy.json
-          parameters: parameters.json RunbookUpdateEndsContent=mobizupdatemgrdevsa45
+          parameters: parameters.json 
          
          
 
@@ -59,3 +61,8 @@ jobs:
           package: build-art/${{ github.run_id }}.zip
           resource-group: ${{ vars.RESOURCE_GROUP_NAME }}
           credentials: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Update Runbook Content
+        run: |
+          az automation runbook replace-content --automation-account-name "${{ env.AutomationAccountName }} " --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --name "TurnOnVMs-UpdateStart" --content TurnOnVMs-UpdateStart.ps1
+          az automation runbook replace-content --automation-account-name "${{ env.AutomationAccountName }} " --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --name "TurnOffVMs-UpdateEnds" --content TurnOffVMs-UpdateEnds.ps1
+
