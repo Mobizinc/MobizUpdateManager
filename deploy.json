@@ -102,7 +102,7 @@
             "resources": [
                 {
                     "type": "variables",
-                    "apiVersion": "2022-08-08",
+                    "apiVersion": "2015-10-31",
                     "name": "UpdateMgrAutomationAccountName",
                     "dependsOn": [
                         "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
@@ -113,7 +113,7 @@
                 },
                 {
                     "type": "variables",
-                    "apiVersion": "2022-08-08",
+                     "apiVersion": "2015-10-31",
                     "name": "UpdateMgrRG",
                     "dependsOn": [
                         "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
@@ -124,7 +124,7 @@
                 },
                 {
                     "type": "variables",
-                    "apiVersion": "2022-08-08",
+                    "apiVersion": "2015-10-31",
                     "name": "UpdateMgrScheduleMonitorQueue",
                     "dependsOn": [
                         "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
@@ -135,7 +135,7 @@
                 },
                 {
                     "type": "variables",
-                    "apiVersion": "2022-08-08",
+                     "apiVersion": "2015-10-31",
                     "name": "UpdateMgrStorageAccount",
                     "dependsOn": [
                         "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
@@ -146,7 +146,7 @@
                 },
                 {
                     "type": "variables",
-                    "apiVersion": "2022-08-08",
+                    "apiVersion": "2015-10-31",
                     "name": "UpdateMgrSummaryQueue",
                     "dependsOn": [
                         "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
