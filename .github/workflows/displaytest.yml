@@ -33,9 +33,7 @@ jobs:
           creds: ${{ env.AzureCreds }}
           enable-AzPSSession: true
           
-       - name: 'Get resource group with PowerShell action'
-          uses: azure/powershell@v1
-          with:
-             inlineScript: |
-               Get-AzResourceGroup
-             azPSVersion: "latest" 
+        - name: Setting Permissions
+         run: |          
+          chmod +x "./AzActions/permissions.sh"
+          ./AzActions/permissions.sh
