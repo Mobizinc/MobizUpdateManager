@@ -3,7 +3,7 @@ $storageAccountName=Get-AutomationVariable -Name "UpdateMgrStorageAccount"
 $scheduleMonitorQueue=Get-AutomationVariable -Name "UpdateMgrScheduleMonitorQueue"
 $automationAccountName=Get-AutomationVariable -Name "UpdateMgrAutomationAccountName"
 
-$timespan = new-timespan -hours 1 -minutes 1
+$timespan = new-timespan -hours 1 -minutes 15
 $StartDate=(GET-DATE)
 
 #Set context and get Schedules
