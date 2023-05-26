@@ -26,14 +26,18 @@ jobs:
           echo "ResourceGroupName=${{ vars.RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
           storageAccountName=$(jq -r '.parameters.StorageAccountName.value' parameters.json)
           echo "StorageAccountName=$storageAccountName" >> $GITHUB_ENV
-          
+           
       
        - uses: azure/login@v1
          with:
           creds: ${{ env.AzureCreds }}
           enable-AzPSSession: true
-          
-        - name: Setting Permissions
-         run: |          
-          chmod +x "./AzActions/permissions.sh"
-          ./AzActions/permissions.sh
+         
+       - name: Set up Azure PowerShell
+         uses: azure/powershell@v1
+         with:              
+              azPSVersion: "latest"
+
+       - name: Run PowerShell script
+         run: |       
+          .\PowershellScripts\setUpAutomationSchedules.ps1
