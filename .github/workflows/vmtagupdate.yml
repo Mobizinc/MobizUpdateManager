@@ -25,7 +25,11 @@ jobs:
        - uses: azure/login@v1
          with:
           creds: ${{ env.AzureCreds }}
-          
+       - name: Convert Excel to CSV
+         uses: microsoft/excel-to-csv-action@v1
+         with:
+          excel-file: vm_list.xlsx
+          csv-file: vm_list.csv
        - name: Run script
          run: |
           #!/bin/bash
