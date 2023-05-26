@@ -11,7 +11,7 @@ existing_role_assignment=$(az role assignment list --assignee "$AutomationAccoun
 echo "role: $existing_role_assignment"
 # Create the role assignment if it doesn't exist
 if [[ -z "$existing_role_assignment" ]]; then
-    az role assignment create --assignee "$AutomationAccountName" --scope "$storage_account_id" --resource-group "$ResourceGroupName" --role "$role_name"
+    az role assignment create --assignee "$AutomationAccountName" --scope "$storage_account_id"  --role "$role_name"
     echo "Role assignment created. $role_name"
 else
     echo "Role assignment already exists. $role_name"
@@ -22,7 +22,7 @@ existing_role_assignment=$(az role assignment list --assignee "$AutomationAccoun
 echo "role: $existing_role_assignment"
 # Create the role assignment if it doesn't exist
 if [[ -z "$existing_role_assignment" ]]; then
-    az role assignment create --assignee "$AutomationAccountName" --scope "$storage_account_id" --role "$role_name" --resource-group "$ResourceGroupName" 
+    az role assignment create --assignee "$AutomationAccountName" --scope "$storage_account_id" --role "$role_name"
     echo "Role assignment created. $role_name"
 else
     echo "Role assignment already exists. $role_name"
@@ -38,7 +38,7 @@ existing_role_assignment=$(az role assignment list --assignee "$LogicAppName" --
 
 # Create the role assignment if it doesn't exist
 if [[ -z "$existing_role_assignment" ]]; then
-    az role assignment create --assignee  "$LogicAppName" --scope "$storage_account_id" --role "$role_name" --resource-group "$ResourceGroupName" 
+    az role assignment create --assignee  "$LogicAppName" --scope "$storage_account_id" --role "$role_name"
     echo "Role assignment created. $role_name"
 else
     echo "Role assignment already exists. $role_name"
