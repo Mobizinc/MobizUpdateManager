@@ -36,4 +36,4 @@ jobs:
        
        - name: Run PowerShell script
          run: |       
-          ./PowershellScripts/setUpAutomationSchedules.ps1
+          .\PowershellScripts\setUpAutomationSchedules.ps1
