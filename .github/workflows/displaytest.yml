@@ -35,12 +35,13 @@ jobs:
        - name: Update Runbook Content
          run: |          
           az config set extension.use_dynamic_install=yes_without_prompt
-          az identity show --name $AutomationAccountName --resource-group $ResourceGroupName --query 'principalId' --output tsv
-          
+
           role_name="Storage Queue Data Contributor"
           # Get the Automation Account resource ID
           automation_account_id=$(az automation account show --name "$AutomationAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv)
           echo "aa id: $automation_account_id"
+          az resource show --ids $utomation_account_id --query 'identity.principalId' --output tsv
+
           az automation account show --name "$AutomationAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv
           storage_account_id=$(az storage account show --name "$StorageAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv)
           echo "storage id: $storage_account_id"
