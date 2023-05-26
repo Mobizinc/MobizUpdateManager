@@ -67,10 +67,6 @@ jobs:
          run: |          
           chmod +x "./AzActions/manageRunbooks.sh"
           ./AzActions/manageRunbooks.sh          
-       - name: Create Automation Variables
-         run: |          
-          chmod +x "./AzActions/createAutomationVariables.sh"
-          ./AzActions/createAutomationVariables.sh
-
+      
 
 
