@@ -40,9 +40,9 @@ jobs:
           # Get the Automation Account resource ID
           automation_account_id=$(az automation account show --name "$AutomationAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv)
           echo "aa id: $automation_account_id"
-          az resource show --ids $automation_account_id --query 'identity.principalId' --output tsv
-
-          az automation account show --name "$AutomationAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv
+          automation_objectid=$(az resource show --ids $automation_account_id --query 'identity.principalId' --output tsv)
+          
           storage_account_id=$(az storage account show --name "$StorageAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv)
           echo "storage id: $storage_account_id"
-          az storage account show --name "$StorageAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv
+          az role assignment list --assignee "$automation_objectid"  --scope "$storage_account_id" --output tsv
+          
