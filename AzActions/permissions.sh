@@ -7,7 +7,7 @@ automation_account_id=$(az automation account show --name "$AutomationAccountNam
 storage_account_id=$(az storage account show --name "$StorageAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv)
 
 # Check if the role assignment already exists
-existing_role_assignment=$(az role assignment list --assignee "$AutomationAccountName" --resource-group "$ResourceGroupName" --scope "$storage_account_id" --output tsv)
+existing_role_assignment=$(az role assignment list --assignee "$AutomationAccountName"  --scope "$storage_account_id" --output tsv)
 echo "role: $existing_role_assignment"
 # Create the role assignment if it doesn't exist
 if [[ -z "$existing_role_assignment" ]]; then
@@ -18,7 +18,7 @@ else
 fi
 
 role_name="Storage Account Key Operator Service Role"
-existing_role_assignment=$(az role assignment list --assignee "$AutomationAccountName"  --scope "$storage_account_id" --resource-group "$ResourceGroupName" --output tsv)
+existing_role_assignment=$(az role assignment list --assignee "$AutomationAccountName"  --scope "$storage_account_id"  --output tsv)
 echo "role: $existing_role_assignment"
 # Create the role assignment if it doesn't exist
 if [[ -z "$existing_role_assignment" ]]; then
@@ -34,7 +34,7 @@ logicapp_id=$(az logicapp show --name "$LogicAppName" --resource-group "$Resourc
 storage_account_id=$(az storage account show --name "$StorageAccountName" --resource-group "$ResourceGroupName"  --query "id" --output tsv)
 
 # Check if the role assignment already exists
-existing_role_assignment=$(az role assignment list --assignee "$LogicAppName" --scope "$storage_account_id" --resource-group "$ResourceGroupName"  --output tsv)
+existing_role_assignment=$(az role assignment list --assignee "$LogicAppName" --scope "$storage_account_id"  --output tsv)
 
 # Create the role assignment if it doesn't exist
 if [[ -z "$existing_role_assignment" ]]; then
