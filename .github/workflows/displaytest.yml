@@ -29,7 +29,11 @@ jobs:
        - uses: azure/login@v1
          with:
           creds: ${{ env.AzureCreds }}
-
+          
+       - name: Update Runbook Content
+         run: |          
+          chmod +x "./AzActions/manageRunbooks.sh"
+          ./AzActions/manageRunbooks.sh     
        - name: Update Runbook Content
          run: |
           ls  -R
