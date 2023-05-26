@@ -29,10 +29,14 @@ jobs:
        - name: Run script
          run: |
           #!/bin/bash
-          csv_file="vm_list.csv"
+          file="vm_list.csv"
+          tail -n +2 "$file" | while IFS= read -r line || [ -n "$line" ]; do
+              vm_name=$(echo "$line" | cut -d ',' -f 1)
+              rg_name=$(echo "$line" | cut -d ',' -f 2)
+              sub_name=$(echo "$line" | cut -d ',' -f 3)
+              tag_value=$(echo "$line" | cut -d ',' -f 4)
+              tag_name="Patch_Schedule"
+              resource_id="/subscriptions/$(az account show --subscription $sub_name --query 'id' --output tsv)/resourceGroups/$rg_name/providers/Microsoft.Compute/virtualMachines/$vm_name"
+              az resource tag --ids $resource_id --tags $tag_name="$tag_value"
 
-          # Skip the first row (header) and loop through the CSV file, extracting specific columns
-          tail -n +1 "$csv_file" | while IFS= read -r line
-          do
-              echo "$line"
-          done
+          done 
