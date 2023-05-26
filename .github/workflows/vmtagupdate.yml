@@ -36,9 +36,19 @@ jobs:
               
           { read -r; while IFS=, read -r vm_name resource_group_name subscription_name new_tag_value; do
               # Construct the resource ID based on the provided information
+              echo "$subscription_name"
               resource_id="/subscriptions/$(az account show --subscription $subscription_name --query 'id' --output tsv)/resourceGroups/$resource_group_name/providers/Microsoft.Compute/virtualMachines/$vm_name"
               tag_name="Patch_Schedule"
               # Call the function to create or update the tag value
               #create_or_update_tag "$resource_id" "Patch_Schedule" "$new_tag_value"
                az resource tag --ids $resource_id --tags $tag_name="$new_tag_value"
           done; } < "$csv_file"
+          
+          tail -n +2 "$csv_file" | while IFS= read -r line
+          do
+              vm_name=$(echo "$line" | cut -d ',' -f 1)
+              sub_name=$(echo "$line" | cut -d ',' -f 3)
+
+              echo "VM Name: $vm_name"
+              echo "Subscription Name: $sub_name"
+          done
