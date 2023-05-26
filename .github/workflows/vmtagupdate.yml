@@ -34,6 +34,7 @@ jobs:
           # Skip the first row (header) and loop through the CSV file, extracting specific columns
           tail -n +2 "$csv_file" | while IFS= read -r line
           do
+             echo "VM line: $line"
               vm_name=$(echo "$line" | cut -d ',' -f 1)
               sub_name=$(echo "$line" | cut -d ',' -f 3)
 
