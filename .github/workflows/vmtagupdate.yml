@@ -40,3 +40,4 @@ jobs:
               az resource tag --ids $resource_id --tags $tag_name="$tag_value"
 
           done 
+

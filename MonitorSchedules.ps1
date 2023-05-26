@@ -1,3 +1,4 @@
+
 $storageRGName=Get-AutomationVariable -Name "UpdateMgrRG"
 $storageAccountName=Get-AutomationVariable -Name "UpdateMgrStorageAccount"
 $scheduleMonitorQueue=Get-AutomationVariable -Name "UpdateMgrScheduleMonitorQueue"
@@ -75,4 +76,3 @@ foreach ($schedule in $schedules)
         }
 
 }
-

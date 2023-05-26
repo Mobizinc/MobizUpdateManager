@@ -23,15 +23,9 @@
         "StorageAccountName": {
             "defaultValue": "mobizupdatemgrdevsa",
             "type": "String"
-        },
-        "RunbookUpdateEndsContent": {
-            "defaultValue": "xxxxxxxx",
-            "type": "String"
-        },
-        "RunbookUpdateStartContent": {
-            "defaultValue": "xxxxxxx",
-            "type": "String"
         }
+        
+        
     },
     "variables": {},
     "resources": [
@@ -98,7 +92,67 @@
                     "keySource": "Microsoft.Automation",
                     "identity": {}
                 }
-            }
+            },
+            "resources": [
+                {
+                    "type": "variables",
+                    "apiVersion": "2015-10-31",
+                    "name": "UpdateMgrAutomationAccountName",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                        "value": "[concat('\"',parameters('AutomationAccountName'),'\"')]"
+                    }
+                },
+                {
+                    "type": "variables",
+                     "apiVersion": "2015-10-31",
+                    "name": "UpdateMgrRG",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                       "value": "[concat('\"',resourceGroup().name,'\"')]"
+                    }
+                },
+                {
+                    "type": "variables",
+                    "apiVersion": "2015-10-31",
+                    "name": "UpdateMgrScheduleMonitorQueue",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                        "value": "\"schedulemonitorqueue\""
+                    }
+                },
+                {
+                    "type": "variables",
+                     "apiVersion": "2015-10-31",
+                    "name": "UpdateMgrStorageAccount",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                       
+                        "value": "[concat('\"',parameters('StorageAccountName'),'\"')]"
+                        
+                    }
+                },
+                {
+                    "type": "variables",
+                    "apiVersion": "2015-10-31",
+                    "name": "UpdateMgrSummaryQueue",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                        "value":  "\"updatesummary\""
+                    }
+                }
+
+            ]
         },
         {
             "type": "Microsoft.Automation/automationAccounts/runbooks",
@@ -113,10 +167,8 @@
                 "runbookType": "PowerShell",
                 "logVerbose": false,
                 "logProgress": false,
-                "logActivityTrace": 0,
-                "runbookContent": {
-                    "content": "[parameters('RunbookUpdateEndsContent')]"
-                }
+                "logActivityTrace": 0
+               
             }
 
 
@@ -134,10 +186,7 @@
                 "runbookType": "PowerShell",
                 "logVerbose": false,
                 "logProgress": false,
-                "logActivityTrace": 0,
-                "runbookContent": {
-                    "content": "[parameters('RunbookUpdateStartContent')]"
-                }
+                "logActivityTrace": 0
             }
         },
         {
@@ -153,10 +202,7 @@
                 "runbookType": "PowerShell",
                 "logVerbose": false,
                 "logProgress": false,
-                "logActivityTrace": 0,
-                "runbookContent": {
-                    "content": "[parameters('RunbookUpdateStartContent')]"
-                }
+                "logActivityTrace": 0
             }
         },
 
