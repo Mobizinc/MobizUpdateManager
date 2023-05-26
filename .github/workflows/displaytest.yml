@@ -34,21 +34,10 @@ jobs:
          run: |          
           az config set extension.use_dynamic_install=yes_without_prompt
  
-          az automation account show --name "$AutomationAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv
+          
           role_name="Storage Queue Data Contributor"
           # Get the Automation Account resource ID
           automation_account_id=$(az automation account show --name "$AutomationAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv)
           echo "aa id: $automation_account_id"
-          # Get the Storage Account resource ID
-          storage_account_id=$(az storage account show --name "$StorageAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv)
-          echo "aa id: $storage_account_id"
-          # Check if the role assignment already exists
-          existing_role_assignment=$(az role assignment list --assignee "$automation_account_id" --scope "$storage_account_id" --resource-group "$ResourceGroupName"  --output tsv)
-
-          # Create the role assignment if it doesn't exist
-          if [[ -z "$existing_role_assignment" ]]; then
-              az role assignment create --assignee "$automation_account_id" --scope "$storage_account_id" --resource-group "$ResourceGroupName" --role "$role_name"
-              echo "Role assignment created. $role_name"
-          else
-              echo "Role assignment already exists. $role_name"
-          fi
+          az automation account show --name "$AutomationAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv
+          
