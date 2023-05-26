@@ -132,3 +132,37 @@ foreach($id in $jobsList)
 }
 #Clean up our variables:
 Remove-AzAutomationVariable -AutomationAccountName $AutomationAccount -ResourceGroupName $ResourceGroup -name $runID
+
+
+
+#UpdateManagement
+
+#Update Management Additional Tasks
+$context = ConvertFrom-Json  $SoftwareUpdateConfigurationRunContext
+$vmIds = $context.SoftwareUpdateConfigurationSettings.AzureVirtualMachines
+#Get Storage details
+$storageRGName=Get-AutomationVariable -Name "UpdateMgrRG"
+$storageAccountName=Get-AutomationVariable -Name "UpdateMgrStorageAccount"
+$storageQueueName=Get-AutomationVariable -Name "UpdateMgrSummaryQueue"
+
+#Set Context
+$AzureContext = (Connect-AzAccount -Identity ).context
+$AzureContext = Set-AzContext -SubscriptionName $AzureContext.Subscription -DefaultProfile $AzureContext
+
+#Get Key and set Storage Context
+$key = (Get-AzStorageAccountKey -ResourceGroupName $storageRGName -Name $storageAccountName)[0].Value
+
+$updateMgrStoragecontext = New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $key
+
+$queue = Get-AzStorageQueue –Name $storageQueueName –Context $updateMgrStoragecontext
+
+$updateInfo=@{
+    runId=$context.SoftwareUpdateConfigurationRunId
+    virtualMachines=$context.SoftwareUpdateConfigurationSettings.AzureVirtualMachines
+}
+
+$updateInfo =$updateInfo | ConvertTo-Json
+
+$queueMessage = [Microsoft.Azure.Storage.Queue.CloudQueueMessage]::new($updateInfo)
+
+$queue.CloudQueue.AddMessageAsync($queueMessage)
