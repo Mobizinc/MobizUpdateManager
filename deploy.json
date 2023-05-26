@@ -102,7 +102,7 @@
                         "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
                     ],
                     "properties": {
-                        "value": "[parameters('AutomationAccountName')]"
+                        "value": "\"[parameters('AutomationAccountName')]\""
                     }
                 },
                 {
@@ -113,7 +113,7 @@
                         "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
                     ],
                     "properties": {
-                        "value": "[resourceGroup().name]"
+                        "value": "\"[resourceGroup().name]\""
                     }
                 },
                 {
@@ -135,7 +135,7 @@
                         "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
                     ],
                     "properties": {
-                        "value":  "[parameters('StorageAccountName')]"
+                        "value":  "\"[parameters('StorageAccountName')]\""
                     }
                 },
                 {
