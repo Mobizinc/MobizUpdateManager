@@ -32,7 +32,10 @@ jobs:
           csv_file="vm_list.csv"
 
           # Skip the first row (header) and loop through the CSV file, extracting specific columns
-          tail -n +1 "$csv_file" | while IFS= read -r line
-          do
-              echo "$line"
-          done
+          
+          { read -r; while IFS=, read -r vm_name resource_group_name subscription_name new_tag_value; do
+            # Construct the resource ID based on the provided information
+            resource_id="/subscriptions/$(az account show --subscription $subscription_name --query 'id' --output tsv)/resourceGroups/$resource_group_name/providers/Microsoft.Compute/virtualMachines/$vm_name"
+
+             echo "$resource_id"
+          done; } < "$csv_file"
