@@ -33,7 +33,10 @@ jobs:
           creds: ${{ env.AzureCreds }}
           enable-AzPSSession: true
           
-        - name: Setting Permissions
-         run: |          
-          chmod +x "./AzActions/permissions.sh"
-          ./AzActions/permissions.sh
+         
+       - name: Setting Permissions
+         uses: azure/powershell@v1
+         with:
+              inlineScript: |
+               Get-AzResourceGroup
+              azPSVersion: "latest"
