@@ -12,7 +12,13 @@ jobs:
     - name: Use variables
       run: |
         echo "repository variable : ${{ vars.RESOURCE_GROUP_NAME }}"
-       
+    - name: Update Runbook Content
+         run: |
+          ls
+          az config set extension.use_dynamic_install=yes_without_prompt
+          az automation runbook replace-content --automation-account-name "${{ env.AutomationAccountName }}" --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --name "MonitorSchedules" --content @Automation\Runbooks\MonitorSchedules.ps1
+
+     
        
         
        
