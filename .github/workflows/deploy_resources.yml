@@ -68,7 +68,11 @@ jobs:
        - name: Update Runbook Content
          run: |          
           chmod +x "./AzActions/manageRunbooks.sh"
-          ./AzActions/manageRunbooks.sh          
+          ./AzActions/manageRunbooks.sh   
+       - name: Setting Permissions
+         run: |          
+          chmod +x "./AzActions/permissions.sh"
+          ./AzActions/permissions.sh   
       
 
 
