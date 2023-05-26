@@ -33,7 +33,15 @@
     },
     "variables": {},
     "resources": [
+        
         {
+            "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+            "apiVersion": "2023-01-31",
+            "name": "[parameters('UserManagedIdentityName')]",
+            "location": "eastus2"
+        },
+        {
+            
             "type": "Microsoft.OperationalInsights/workspaces",
             "apiVersion": "2021-12-01-preview",
             "name": "[parameters('LogAnalyticsWorksSpaceName')]",
