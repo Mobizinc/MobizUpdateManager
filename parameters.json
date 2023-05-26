@@ -16,6 +16,9 @@
         },
         "StorageAccountName": {
             "value": "mobizupdatemgrdevsa35"
+        },
+         "UserManagedIdentityName": {
+            "value": "mobizupdatemgr-dev-mi"
         }
     }
 }
