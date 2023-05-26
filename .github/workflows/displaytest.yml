@@ -35,7 +35,7 @@ jobs:
        - name: Update Runbook Content
          run: |          
           az config set extension.use_dynamic_install=yes_without_prompt
- 
+          az ad sp list --display-name "$LogicAppName" --output tsv
           
           role_name="Storage Queue Data Contributor"
           # Get the Automation Account resource ID
