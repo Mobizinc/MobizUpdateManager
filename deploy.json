@@ -98,7 +98,65 @@
                     "keySource": "Microsoft.Automation",
                     "identity": {}
                 }
-            }
+            },
+            "resources": [
+                {
+                    "type": "variables",
+                    "apiVersion": "2022-08-08",
+                    "name": "UpdateMgrAutomationAccountName",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                        "value": "[parameters('AutomationAccountName')]"
+                    }
+                },
+                {
+                    "type": "variables",
+                    "apiVersion": "2022-08-08",
+                    "name": "UpdateMgrRG",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                        "value": "[resourceGroup().name]"
+                    }
+                },
+                {
+                    "type": "variables",
+                    "apiVersion": "2022-08-08",
+                    "name": "UpdateMgrScheduleMonitorQueue",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                        "value": "schedulemonitorqueue"
+                    }
+                },
+                {
+                    "type": "variables",
+                    "apiVersion": "2022-08-08",
+                    "name": "UpdateMgrStorageAccount",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                        "value":  "[parameters('StorageAccountName')]"
+                    }
+                },
+                {
+                    "type": "variables",
+                    "apiVersion": "2022-08-08",
+                    "name": "UpdateMgrSummaryQueue",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                        "value":  "updatesummary"
+                    }
+                }
+
+            ]
         },
         {
             "type": "Microsoft.Automation/automationAccounts/runbooks",
