@@ -64,13 +64,13 @@ foreach ($schedule in $schedules)
                 }
 
             
-            $scheduleDetails =$scheduleDetails | ConvertTo-Json -Depth 5
+            #$scheduleDetails =$scheduleDetails | ConvertTo-Json -Depth 5
             
             Write-Output "Notifying $($schedule.Name) which is scheduled at $($schedule.ScheduleConfiguration.NextRun.UtcDateTime) for the scan time $($StartDate)"
 
-            $queueMessage = [Microsoft.Azure.Storage.Queue.CloudQueueMessage]::new($scheduleDetails)
+            #$queueMessage = [Microsoft.Azure.Storage.Queue.CloudQueueMessage]::new($scheduleDetails)
 
-            $queue.CloudQueue.AddMessageAsync($queueMessage)
+            #$queue.CloudQueue.AddMessageAsync($queueMessage)
         }else{
             Write-Output "Skipping $($schedule.Name) which is scheduled at $($schedule.ScheduleConfiguration.NextRun.UtcDateTime) for the scan time $($StartDate)"
         }
