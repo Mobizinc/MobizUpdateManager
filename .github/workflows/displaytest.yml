@@ -24,7 +24,9 @@ jobs:
           automationAccountName=$(jq -r '.parameters.AutomationAccountName.value' parameters.json)
           echo "AutomationAccountName=$automationAccountName" >> $GITHUB_ENV
           echo "ResourceGroupName=${{ vars.RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
-          echo "SubscriptionId=${{secrets.AZURE_SUBSCRIPTION_ID}}" >> $GITHUB_ENV
+          storageAccountName=$(jq -r '.parameters.StorageAccountName.value' parameters.json)
+          echo "StorageAccountName=$storageAccountName" >> $GITHUB_ENV
+          
       
        - uses: azure/login@v1
          with:
