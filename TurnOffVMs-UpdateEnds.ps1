@@ -154,7 +154,7 @@ $key = (Get-AzStorageAccountKey -ResourceGroupName $storageRGName -Name $storage
 
 $updateMgrStoragecontext = New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $key
 
-$queue = Get-AzStorageQueue –Name $storageQueueName –Context $updateMgrStoragecontext
+$queue = Get-AzStorageQueue -Name $storageQueueName -Context $updateMgrStoragecontext
 
 $updateInfo=@{
     runId=$context.SoftwareUpdateConfigurationRunId
