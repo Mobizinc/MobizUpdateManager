@@ -23,6 +23,8 @@ jobs:
           echo "LogicAppName=$logicAppName" >> $GITHUB_ENV
           automationAccountName=$(jq -r '.parameters.AutomationAccountName.value' parameters.json)
           echo "AutomationAccountName=$automationAccountName" >> $GITHUB_ENV
+          storageAccountName=$(jq -r '.parameters.StorageAccountName.value' parameters.json)
+          echo "StorageAccountName=$storageAccountName" >> $GITHUB_ENV
           echo "ResourceGroupName=${{ vars.RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
 
 
