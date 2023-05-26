@@ -1,7 +1,6 @@
 az config set extension.use_dynamic_install=yes_without_prompt
-az resource create --resource-group $ResourceGroupName --resource-type "Microsoft.Automation/automationAccounts/variables" --name <variable-name> --properties '{"name": "UpdateMgrAutomationAccountName", "value": "Need To Add"}' --output json --query id --subscription $SubscriptionId
-az resource create --resource-group $ResourceGroupName --resource-type "Microsoft.Automation/automationAccounts/variables" --name <variable-name> --properties '{"name": "UpdateMgrRG", "value": "Need To Add"}' --output json --query id --subscription $SubscriptionId
-az resource create --resource-group $ResourceGroupName --resource-type "Microsoft.Automation/automationAccounts/variables" --name <variable-name> --properties '{"name": "UpdateMgrScheduleMonitorQueue", "value": "schedulemonitorqueue"}' --output json --query id --subscription $SubscriptionId
-az resource create --resource-group $ResourceGroupName --resource-type "Microsoft.Automation/automationAccounts/variables" --name <variable-name> --properties '{"name": "UpdateMgrStorageAccount", "value": "Need To Add"}' --output json --query id --subscription $SubscriptionId
-az resource create --resource-group $ResourceGroupName --resource-type "Microsoft.Automation/automationAccounts/variables" --name <variable-name> --properties '{"name": "UpdateMgrSummaryQueue", "value": "updatesummary"}' --output json --query id --subscription $SubscriptionId
+az rest --method put --uri https://management.azure.com/subscriptions/158d9f92-ec1e-433e-8388-6f7157282c13/resourceGroups/mobizupdatemgr-qa-rg/providers/Microsoft.Automation/automationAccounts/mobizupdatemgr-qa-rg/variables/Test?api-version=2020-01-13-preview --body '{ "properties": { "value": "<variable-value>" } }'
+
+
+
 
