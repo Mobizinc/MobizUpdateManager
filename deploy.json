@@ -28,7 +28,7 @@
             "defaultValue": "xxxxxxxx",
             "type": "String"
         },
-         "RunbookUpdateStartContent": {
+        "RunbookUpdateStartContent": {
             "defaultValue": "xxxxxxx",
             "type": "String"
         }
@@ -54,7 +54,25 @@
                 },
                 "publicNetworkAccessForIngestion": "Enabled",
                 "publicNetworkAccessForQuery": "Enabled"
-            }
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.OperationsManagement/solutions",
+                    "apiVersion": "2015-11-01-preview",
+                    "name": "[concat('Updates','(',parameters('LogAnalyticsWorksSpaceName'),')')]",
+                    "location": "eastus",
+                    "plan": {
+                        "name": "[concat('Updates','(',parameters('LogAnalyticsWorksSpaceName'),')')]",
+                        "promotionCode": "",
+                        "product": "OMSGallery/Updates",
+                        "publisher": "Microsoft"
+                    },
+                    "properties": {
+                        "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces/',parameters('LogAnalyticsWorksSpaceName'))]"
+
+                    }
+                }
+            ]
         },
         {
             "type": "Microsoft.Automation/automationAccounts",
@@ -97,8 +115,8 @@
                     "content": "[parameters('RunbookUpdateEndsContent')]"
                 }
             }
-                
-            
+
+
         },
         {
             "type": "Microsoft.Automation/automationAccounts/runbooks",
@@ -138,7 +156,7 @@
                 }
             }
         },
-       
+
         {
             "type": "Microsoft.Automation/automationAccounts/softwareUpdateConfigurations",
             "apiVersion": "2019-06-01",
@@ -191,20 +209,20 @@
                     }
                 },
                 "scheduleInfo": {
-                "advancedSchedule": {
-                    "monthDays": [],
-                    "monthlyOccurrences": []
-                },
-                "timeZone": "America/New_York",
-                "startTime": "2023-06-24T17:19:00-04:00",
-                "expiryTime": "9999-12-31T18:59:00-05:00",
-                "interval": 2,
-                "frequency": "Week",
-                "weekDays": [
-                    "Saturday"
-                ]
+                    "advancedSchedule": {
+                        "monthDays": [],
+                        "monthlyOccurrences": []
+                    },
+                    "timeZone": "America/New_York",
+                    "startTime": "2023-06-24T17:19:00-04:00",
+                    "expiryTime": "9999-12-31T18:59:00-05:00",
+                    "interval": 2,
+                    "frequency": "Week",
+                    "weekDays": [
+                        "Saturday"
+                    ]
 
-            }
+                }
             }
         },
         {
