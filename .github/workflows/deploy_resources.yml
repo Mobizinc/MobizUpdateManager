@@ -23,6 +23,7 @@ jobs:
           echo "LogicAppName=$logicAppName" >> $GITHUB_ENV
           automationAccountName=$(jq -r '.parameters.AutomationAccountName.value' parameters.json)
           echo "AutomationAccountName=$automationAccountName" >> $GITHUB_ENV
+          echo "ResourceGroupName=${{ vars.RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
 
        - uses: azure/login@v1
          with:
@@ -63,8 +64,14 @@ jobs:
           credentials: ${{ secrets.AZURE_CREDENTIALS }}
        - name: Update Runbook Content
          run: |
-          ls
-          az --file 'AzActions/manageRunbooks.txt'
+          ls  -R  
+          chmod +x "./AzActions/manageRunbooks.sh"
+          ./AzActions/manageRunbooks.sh
+          - name: Update Runbook Content
+       - name: Create Automation Variables
+         run: |          
+          chmod +x "./AzActions/createAutomationVariables.sh"
+          ./AzActions/createAutomationVariables.sh
 
 
 
