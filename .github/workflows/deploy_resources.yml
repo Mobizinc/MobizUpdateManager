@@ -69,10 +69,7 @@ jobs:
           az automation runbook publish --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --automation-account-name "${{ env.AutomationAccountName }}" --name "TurnOnVMs-UpdateStart"
           az automation runbook replace-content --automation-account-name "${{ env.AutomationAccountName }}" --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --name "TurnOffVMs-UpdateEnds" --content @TurnOffVMs-UpdateEnds.ps1
           az automation runbook publish --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --automation-account-name "${{ env.AutomationAccountName }}" --name "TurnOffVMs-UpdateEnds"
-          #az automation runbook replace-content --automation-account-name "${{ env.AutomationAccountName }}" --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --name "MonitorSchedules" --content @monitor.ps1
-          #az automation runbook publish --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --automation-account-name "${{ env.AutomationAccountName }}" --name "MonitorSchedules"
-          
-           az automation runbook replace-content --automation-account-name "${{ env.AutomationAccountName }}" --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --name "MonitorSchedules" --content @MonitorSchedules.ps1
+          az automation runbook replace-content --automation-account-name "${{ env.AutomationAccountName }}" --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --name "MonitorSchedules" --content @MonitorSchedules.ps1
           az automation runbook publish --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --automation-account-name "${{ env.AutomationAccountName }}" --name "MonitorSchedules"
 
 
