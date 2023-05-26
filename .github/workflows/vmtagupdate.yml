@@ -29,7 +29,7 @@ jobs:
        - name: Run script
          run: |
           #!/bin/bash
-          csv_file="path/to/csv/file.csv"
+          csv_file="vm_list.csv"
 
           # Skip the first row (header) and loop through the CSV file, extracting specific columns
           tail -n +2 "$csv_file" | while IFS= read -r line
