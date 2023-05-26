@@ -32,6 +32,8 @@ jobs:
           
        - name: Update Runbook Content
          run: |          
+          az config set extension.use_dynamic_install=yes_without_prompt
+
           role_name="Storage Queue Data Contributor"
           az automation account show --name "$AutomationAccountName" --query "id" --output tsv
           az storage account show --name "$StorageAccountName" --query "id" --output tsv
