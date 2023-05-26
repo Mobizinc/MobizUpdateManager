@@ -137,7 +137,7 @@
                         "Body": "<p><br>\n@{base64ToString(body('Run_query_and_visualize_results')?['body'])}</p>",
                         "Importance": "Normal",
                         "Subject": "Update Summary For Run ID  : @{body('Parse_JSON')?['runId']}",
-                        "To": "roshanmarcus22@gmail.com; alvingeorge@gmail.com"
+                        "To": "alvingeorge@gmail.com"
                     },
                     "host": {
                         "connection": {

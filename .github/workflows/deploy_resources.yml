@@ -66,5 +66,10 @@ jobs:
           ls
           az config set extension.use_dynamic_install=yes_without_prompt
           az automation runbook replace-content --automation-account-name "${{ env.AutomationAccountName }}" --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --name "TurnOnVMs-UpdateStart" --content @TurnOnVMs-UpdateStart.ps1
+          az automation runbook publish --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --automation-account-name "${{ env.AutomationAccountName }}" --name "TurnOnVMs-UpdateStart"
           az automation runbook replace-content --automation-account-name "${{ env.AutomationAccountName }}" --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --name "TurnOffVMs-UpdateEnds" --content @TurnOffVMs-UpdateEnds.ps1
+          az automation runbook publish --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --automation-account-name "${{ env.AutomationAccountName }}" --name "TurnOffVMs-UpdateEnds"
+          az automation runbook replace-content --automation-account-name "${{ env.AutomationAccountName }}" --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --name "MonitorSchedules" --content @MonitorSchedules.ps1
+          az automation runbook publish --resource-group ${{ vars.RESOURCE_GROUP_NAME }} --automation-account-name "${{ env.AutomationAccountName }}" --name "MonitorSchedules"
+
 

@@ -119,6 +119,25 @@
                 }
             }
         },
+        {
+            "type": "Microsoft.Automation/automationAccounts/runbooks",
+            "apiVersion": "2022-08-08",
+            "name": "[concat(parameters('AutomationAccountName'), '/MonitorSchedules')]",
+            "location": "eastus2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+            ],
+
+            "properties": {
+                "runbookType": "PowerShell",
+                "logVerbose": false,
+                "logProgress": false,
+                "logActivityTrace": 0,
+                "runbookContent": {
+                    "content": "[parameters('RunbookUpdateStartContent')]"
+                }
+            }
+        },
        
         {
             "type": "Microsoft.Automation/automationAccounts/softwareUpdateConfigurations",
