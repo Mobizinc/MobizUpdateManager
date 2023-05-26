@@ -32,12 +32,7 @@ jobs:
           csv_file="vm_list.csv"
 
           # Skip the first row (header) and loop through the CSV file, extracting specific columns
-          while IFS= read -r line
+          tail -n +2 "$csv_file" | while IFS= read -r line
           do
-             echo "VM line: $line"
-              vm_name=$(echo "$line" | cut -d ',' -f 1)
-              sub_name=$(echo "$line" | cut -d ',' -f 3)
-
-              echo "VM Name: $vm_name"
-              echo "Subscription Name: $sub_name"
-          done < "$csv_file"
+              echo "$line"
+          done
