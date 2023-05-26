@@ -6,7 +6,7 @@ automationAccountToTarget=$(az automation account show --name $AutomationAccount
 az automation schedule create --automation-account-name $AutomationAccountName  --resource-group $ResourceGroupName -n "MonitorUpdateManagementHourly" --frequency Hour --interval 1
 
 #Get Schedule
-schedule=$(az automation schedule show --name "MonitorUpdateManagementHourly" --account $automationAccountToTarget --query "id" --output tsv)
+schedule=$(az automation schedule show --name "MonitorUpdateManagementHourly" --account $automationAccountToTarget --resource-group $ResourceGroupName --query "id" --output tsv)
 
 #Get Runbook
 runbook=$(az automation runbook show --name "MonitorSchedules" --account $automationAccount --query "id" --output tsv)
