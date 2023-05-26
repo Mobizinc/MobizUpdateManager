@@ -88,11 +88,15 @@
             "apiVersion": "2022-08-08",
             "name": "[parameters('AutomationAccountName')]",
             "location": "eastus2",
-            "identity": {
-                "type": "SystemAssigned"
-            },
+           "identity": {
+      "type": "UserAssigned",
+      "userAssignedIdentities": {
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',parameters('UserManagedIdentityName'))]": {}
+      }
+    },
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('LogAnalyticsWorksSpaceName'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('LogAnalyticsWorksSpaceName'))]",
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',parameters('UserManagedIdentityName'))]"
             ],
             "properties": {
                 "publicNetworkAccess": true,
