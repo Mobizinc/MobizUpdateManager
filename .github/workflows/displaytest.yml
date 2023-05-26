@@ -34,5 +34,5 @@ jobs:
           ls  -R
           pwd
           echo "File Path: ${{ github.workspace }}"        
-          chmod +x "./AzActions/manageRunbooks.sh"
-          ./AzActions/manageRunbooks.sh
+          chmod +x "./AzActions/createAutomationVariables.sh"
+          ./AzActions/createAutomationVariables.sh
