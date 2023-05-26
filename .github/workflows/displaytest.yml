@@ -71,10 +71,10 @@ jobs:
           # Check if the role assignment already exists
           existing_role_assignment=$(az role assignment list --assignee "$logicapp_id" --scope "$storage_account_id" --output tsv)
 
-# Create the role assignment if it doesn't exist
-if [[ -z "$existing_role_assignment" ]]; then
-    az role assignment create --assignee "$logicapp_id" --scope "$storage_account_id" --role "$role_name"
-    echo "Role assignment created. $role_name"
-else
-    echo "Role assignment already exists. $role_name"
-fi
+          # Create the role assignment if it doesn't exist
+          if [[ -z "$existing_role_assignment" ]]; then
+              az role assignment create --assignee "$logicapp_id" --scope "$storage_account_id" --role "$role_name"
+              echo "Role assignment created. $role_name"
+          else
+              echo "Role assignment already exists. $role_name"
+          fi
