@@ -1,0 +1,65 @@
+name: VM Tag Update
+
+on:
+  workflow_dispatch:
+
+
+
+jobs:
+  deploy-and-run:
+    runs-on: ubuntu-latest
+    environment: qa
+    steps:
+       - name: Checkout repository
+         uses: actions/checkout@v2
+        
+       - name: Create Azure cred variable
+         run: |
+          AzureCreds=$(echo '{"clientId": "${{secrets.AZURE_CLIENT_ID}}", "clientSecret": "${{secrets.AZURE_CLIENT_SECRET}}", "subscriptionId": "${{secrets.AZURE_SUBSCRIPTION_ID}}", "tenantId": "${{secrets.AZURE_TENANT_ID}}"}' | jq -c .)
+          echo "AzureCreds=$AzureCreds" >> $GITHUB_ENV
+          logicAppName=$(jq -r '.parameters.LogicAppName.value' parameters.json)
+          echo "LogicAppName=$logicAppName" >> $GITHUB_ENV
+          automationAccountName=$(jq -r '.parameters.AutomationAccountName.value' parameters.json)
+          echo "AutomationAccountName=$automationAccountName" >> $GITHUB_ENV
+
+       - uses: azure/login@v1
+         with:
+          creds: ${{ env.AzureCreds }}
+          
+       - name: Update VM Tag
+         run: |
+          #!/bin/bash
+
+          # CSV file path
+           csv_file="vmlist.csv"
+
+          # Function to create or update the tag value for a resource
+          function create_or_update_tag() {
+              local resource_id=$1
+              local tag_name=$2
+              local new_tag_value=$3
+
+              # Check if the tag already exists
+              az resource show --ids $resource_id --query "tags.$tag_name" >/dev/null 2>&1
+
+              if [ $? -eq 0 ]; then
+                  # Tag exists, update its value
+                  az resource tag --ids $resource_id --tags $tag_name="$new_tag_value"
+                  echo "Updated tag value for resource: $resource_id"
+              else
+                  # Tag doesn't exist, create it
+                  az resource tag --ids $resource_id --tags $tag_name="$new_tag_value"
+                  echo "Created tag for resource: $resource_id"
+              fi
+          }
+
+          # Loop through the CSV file
+          while IFS=, read -r vm_name resource_group_name subscription_name new_tag_value
+          do
+              # Construct the resource ID based on the provided information
+              resource_id="/subscriptions/$(az account show --subscription $subscription_name --query 'id' --output tsv)/resourceGroups/$resource_group_name/providers/Microsoft.Compute/virtualMachines/$vm_name"
+              tag_name="Patch_Schedule"
+              # Call the function to create or update the tag value
+              #create_or_update_tag "$resource_id" "Patch_Schedule" "$new_tag_value"
+               az resource tag --ids $resource_id --tags $tag_name="$new_tag_value"
+          done < "$csv_file"
