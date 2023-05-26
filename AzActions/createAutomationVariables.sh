@@ -1,6 +1,7 @@
 az config set extension.use_dynamic_install=yes_without_prompt
-az automation variable create --name 'UpdateMgrAutomationAccountName' --value 'Need To Add' --automation-account-name $AutomationAccountName --resource-group $ResourceGroupName
-az automation variable create --name 'UpdateMgrRG' --value 'Need To Add' --automation-account-name $AutomationAccountName --resource-group $ResourceGroupName
-az automation variable create --name 'UpdateMgrScheduleMonitorQueue' --value 'schedulemonitorqueue' --automation-account-name $AutomationAccountName --resource-group $ResourceGroupName
-az automation variable create --name 'UpdateMgrStorageAccount' --value 'Need To Add' --automation-account-name $AutomationAccountName --resource-group $ResourceGroupName
-az automation variable create --name 'UpdateMgrSummaryQueue' --value 'updatesummary' --automation-account-name $AutomationAccountName --resource-group $ResourceGroupName
+az resource create --resource-group $ResourceGroupName --resource-type "Microsoft.Automation/automationAccounts/variables" --name <variable-name> --properties '{"name": "UpdateMgrAutomationAccountName", "value": "Need To Add"}' --output json --query id --subscription $SubscriptionId
+az resource create --resource-group $ResourceGroupName --resource-type "Microsoft.Automation/automationAccounts/variables" --name <variable-name> --properties '{"name": "UpdateMgrRG", "value": "Need To Add"}' --output json --query id --subscription $SubscriptionId
+az resource create --resource-group $ResourceGroupName --resource-type "Microsoft.Automation/automationAccounts/variables" --name <variable-name> --properties '{"name": "UpdateMgrScheduleMonitorQueue", "value": "schedulemonitorqueue"}' --output json --query id --subscription $SubscriptionId
+az resource create --resource-group $ResourceGroupName --resource-type "Microsoft.Automation/automationAccounts/variables" --name <variable-name> --properties '{"name": "UpdateMgrStorageAccount", "value": "Need To Add"}' --output json --query id --subscription $SubscriptionId
+az resource create --resource-group $ResourceGroupName --resource-type "Microsoft.Automation/automationAccounts/variables" --name <variable-name> --properties '{"name": "UpdateMgrSummaryQueue", "value": "updatesummary"}' --output json --query id --subscription $SubscriptionId
+
