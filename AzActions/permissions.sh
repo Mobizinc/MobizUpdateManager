@@ -12,7 +12,7 @@ existing_role_assignment=$(az role assignment list --assignee "$automation_objec
 echo "role: $existing_role_assignment"
 # Create the role assignment if it doesn't exist
 if [[ -z "$existing_role_assignment" ]]; then
-    az role assignment create --assignee "$automation_objectid" --scope "$storage_account_id"  --role "$role_name"
+    az role assignment create --assignee-object-id "$automation_objectid" --scope "$storage_account_id"  --role "$role_name"
     echo "Role assignment created. $role_name"
 else
     echo "Role assignment already exists. $role_name"
@@ -23,7 +23,7 @@ existing_role_assignment=$(az role assignment list --assignee "$automation_objec
 echo "role: $existing_role_assignment"
 # Create the role assignment if it doesn't exist
 if [[ -z "$existing_role_assignment" ]]; then
-    az role assignment create --assignee "$automation_objectid" --scope "$storage_account_id" --role "$role_name"
+    az role assignment create --assignee-object-id "$automation_objectid" --scope "$storage_account_id" --role "$role_name"
     echo "Role assignment created. $role_name"
 else
     echo "Role assignment already exists. $role_name"
@@ -41,7 +41,7 @@ existing_role_assignment=$(az role assignment list --assignee "$logicapp_objecti
 
 # Create the role assignment if it doesn't exist
 if [[ -z "$existing_role_assignment" ]]; then
-    az role assignment create --assignee  "$logicapp_objectid" --scope "$storage_account_id" --role "$role_name"
+    az role assignment create --assignee-object-id  "$logicapp_objectid" --scope "$storage_account_id" --role "$role_name"
     echo "Role assignment created. $role_name"
 else
     echo "Role assignment already exists. $role_name"
