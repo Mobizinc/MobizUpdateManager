@@ -40,4 +40,6 @@ jobs:
           automation_account_id=$(az automation account show --name "$AutomationAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv)
           echo "aa id: $automation_account_id"
           az automation account show --name "$AutomationAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv
-          
+          storage_account_id=$(az storage account show --name "$StorageAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv)
+          echo "storage id: $storage_account_id"
+          az storage account show --name "$StorageAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv
