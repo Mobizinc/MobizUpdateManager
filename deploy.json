@@ -23,6 +23,10 @@
         "StorageAccountName": {
             "defaultValue": "mobizupdatemgrdevsa",
             "type": "String"
+        },
+         "UserManagedIdentityName": {
+            "defaultValue": "mobizupdatemgr-dev-mi",
+            "type": "String"
         }
         
         
