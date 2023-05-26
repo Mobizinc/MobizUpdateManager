@@ -33,11 +33,7 @@ jobs:
           creds: ${{ env.AzureCreds }}
           enable-AzPSSession: true
          
-       - name: Set up Azure PowerShell
-         uses: azure/powershell@v1
-         with:              
-              azPSVersion: "latest"
-
+       
        - name: Run PowerShell script
          run: |       
           .\PowershellScripts\setUpAutomationSchedules.ps1
