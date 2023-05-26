@@ -15,7 +15,7 @@ $schedules=Get-AzAutomationSoftwareUpdateConfiguration -AutomationAccountName $a
 #Get Key and set Storage Context
 $key = (Get-AzStorageAccountKey -ResourceGroupName $storageRGName -Name $storageAccountName)[0].Value
 $updateMgrStoragecontext = New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $key
-$queue = Get-AzStorageQueue –Name $scheduleMonitorQueue –Context $updateMgrStoragecontext
+$queue = Get-AzStorageQueue -Name $scheduleMonitorQueue -Context $updateMgrStoragecontext
 
 
 foreach ($schedule in $schedules)
@@ -25,7 +25,7 @@ foreach ($schedule in $schedules)
   
 
     
-    $scheduleTimeSpan= NEW-TIMESPAN –Start $StartDate –End $schedule.ScheduleConfiguration.NextRun.UtcDateTime
+    $scheduleTimeSpan= NEW-TIMESPAN -Start $StartDate -End $schedule.ScheduleConfiguration.NextRun.UtcDateTime
     
 
         if($scheduleTimeSpan -lt $timespan){
