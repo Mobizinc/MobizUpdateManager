@@ -69,7 +69,7 @@ foreach ($schedule in $schedules)
             Write-Output "Notifying $($schedule.Name) which is scheduled at $($schedule.ScheduleConfiguration.NextRun.UtcDateTime) for the scan time $($StartDate)"
 
             $queueMessage = [Microsoft.Azure.Storage.Queue.CloudQueueMessage]::new($scheduleDetails)
-
+            $queueMessage.AsBytes = [System.Text.Encoding]::UTF8.GetBytes($queueMessage.AsString)
             $queue.CloudQueue.AddMessageAsync($queueMessage)
         }else{
             Write-Output "Skipping $($schedule.Name) which is scheduled at $($schedule.ScheduleConfiguration.NextRun.UtcDateTime) for the scan time $($StartDate)"
