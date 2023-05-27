@@ -23,13 +23,25 @@
         "StorageAccountName": {
             "defaultValue": "mobizupdatemgrdevsa",
             "type": "String"
+        },
+         "UserManagedIdentityName": {
+            "defaultValue": "mobizupdatemgr-dev-mi",
+            "type": "String"
         }
         
         
     },
     "variables": {},
     "resources": [
+        
         {
+            "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+            "apiVersion": "2023-01-31",
+            "name": "[parameters('UserManagedIdentityName')]",
+            "location": "eastus2"
+        },
+        {
+            
             "type": "Microsoft.OperationalInsights/workspaces",
             "apiVersion": "2021-12-01-preview",
             "name": "[parameters('LogAnalyticsWorksSpaceName')]",
@@ -76,11 +88,15 @@
             "apiVersion": "2022-08-08",
             "name": "[parameters('AutomationAccountName')]",
             "location": "eastus2",
-            "identity": {
-                "type": "SystemAssigned"
-            },
+           "identity": {
+      "type": "UserAssigned",
+      "userAssignedIdentities": {
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',parameters('UserManagedIdentityName'))]": {}
+      }
+    },
             "dependsOn": [
-                "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('LogAnalyticsWorksSpaceName'))]"
+                "[resourceId('Microsoft.OperationalInsights/workspaces',parameters('LogAnalyticsWorksSpaceName'))]",
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities',parameters('UserManagedIdentityName'))]"
             ],
             "properties": {
                 "publicNetworkAccess": true,
