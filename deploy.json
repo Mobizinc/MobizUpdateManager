@@ -166,7 +166,31 @@
                     "properties": {
                         "value":  "\"updatesummary\""
                     }
-                }
+                },
+                {
+                    "type": "variables",
+                    "apiVersion": "2015-10-31",
+                    "name": "UpdateMgrMonitorScope",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                        "value":  "\"24,2\"",
+                        "description": "Provide hours as comma separated values. Schedule information communicated hours before the next run."
+                    }
+                },
+                {
+                    "type": "variables",
+                    "apiVersion": "2015-10-31",
+                    "name": "UpdateMgrMonitorTable",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                        "value":  "\"scheduleTracker\""
+                    }
+                },
+
 
             ]
         },

@@ -25,7 +25,29 @@
                             "nextRun": {
                                 "type": "string"
                             },
+                            "scope": {
+                                "type": "integer"
+                            },
                             "vmIds": {
+                                "items": {
+                                    "properties": {
+                                        "machineName": {
+                                            "type": "string"
+                                        },
+                                        "resourceGroup": {
+                                            "type": "string"
+                                        },
+                                        "subscription": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "resourceGroup",
+                                        "machineName",
+                                        "subscription"
+                                    ],
+                                    "type": "object"
+                                },
                                 "type": "array"
                             }
                         },
@@ -40,7 +62,7 @@
                     "body": {
                         "Body": "<p>Targetted VMs<br>\n@{body('Create_HTML_table')}</p>",
                         "Importance": "Normal",
-                        "Subject": "Upcoming Update Management Schedule : @{body('Parse_JSON')?['name']}   at @{body('Parse_JSON')?['nextRun']}",
+                        "Subject": "Upcoming Update Management Schedule -@{body('Parse_JSON')?['scope']}hr : @{body('Parse_JSON')?['name']}   at @{body('Parse_JSON')?['nextRun']}",
                         "To": "alvingeorge@gmail.com"
                     },
                     "host": {

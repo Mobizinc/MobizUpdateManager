@@ -26,23 +26,14 @@ jobs:
           echo "ResourceGroupName=${{ vars.RESOURCE_GROUP_NAME }}" >> $GITHUB_ENV
           storageAccountName=$(jq -r '.parameters.StorageAccountName.value' parameters.json)
           echo "StorageAccountName=$storageAccountName" >> $GITHUB_ENV
-          
+           
       
        - uses: azure/login@v1
          with:
           creds: ${{ env.AzureCreds }}
-          
-       - name: Update Runbook Content
-         run: |          
-          az config set extension.use_dynamic_install=yes_without_prompt
-
-          role_name="Storage Queue Data Contributor"
-          # Get the Automation Account resource ID
-          automation_account_id=$(az automation account show --name "$AutomationAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv)
-          echo "aa id: $automation_account_id"
-          automation_objectid=$(az resource show --ids $automation_account_id --query 'identity.principalId' --output tsv)
-          
-          storage_account_id=$(az storage account show --name "$StorageAccountName" --resource-group "$ResourceGroupName" --query "id" --output tsv)
-          echo "storage id: $storage_account_id"
-          az role assignment list --assignee "$automation_objectid"  --scope "$storage_account_id" --output tsv
-          
+          enable-AzPSSession: true
+         
+       
+       - name: Run PowerShell script
+         run: |       
+          .\PowershellScripts\setUpAutomationSchedules.ps1
