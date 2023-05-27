@@ -221,7 +221,9 @@
                 "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
             ],
             "properties": {
-                "contentLink": {}
+                "contentLink": {
+                    "uri":"https://www.powershellgallery.com/packages/AzTable"
+                }
             }
         },
         {
