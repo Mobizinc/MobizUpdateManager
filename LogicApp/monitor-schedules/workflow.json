@@ -63,7 +63,7 @@
                         "Body": "<p>Targetted VMs<br>\n@{body('Create_HTML_table')}</p>",
                         "Importance": "Normal",
                         "Subject": "Upcoming Update Management Schedule -@{body('Parse_JSON')?['scope']}hr : @{body('Parse_JSON')?['name']}   at @{body('Parse_JSON')?['nextRun']}",
-                        "To": "alvingeorge@gmail.com"
+                        "To": "@{appsetting('EmailRecipients')}"
                     },
                     "host": {
                         "connection": {
