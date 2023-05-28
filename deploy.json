@@ -222,7 +222,7 @@
             ],
             "properties": {
                 "contentLink": {
-                    "uri":"https://www.powershellgallery.com/packages/AzTable"
+                    "uri":"https://www.powershellgallery.com/api/v2/package/Az/10.0.0"
                 }
             }
         },
@@ -552,6 +552,16 @@
             "sku": {
                 "name": "Standard"
             }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('storageAccounts_mobizupdatemgrdevsa_name'), '/default/scheduleTracker')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/tableServices', parameters('StorageAccountName'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountName'))]"
+            ],
+            "properties": {}
         }
 
     ]
