@@ -69,10 +69,16 @@ jobs:
          run: |          
           chmod +x "./AzActions/manageRunbooks.sh"
           ./AzActions/manageRunbooks.sh   
+
        - name: Setting Permissions
          run: |          
           chmod +x "./AzActions/permissions.sh"
-          ./AzActions/permissions.sh   
+          ./AzActions/permissions.sh 
+
+       - name: Set Logic App - App Settings
+         run: |          
+          chmod +x "./AzActions/manageLogicAppSettings.sh"
+          ./AzActions/manageLogicAppSettings.sh             
 
        - name: Install Modules 
          run: |
@@ -85,10 +91,13 @@ jobs:
          with:
             creds: ${{ env.AzureCreds }}
             
-       - name: Run Post Deployment PowerShell scripts
+       - name: Install Automation Modules
          run: |
-            pwsh -File ./PowerShellActions/setUpAutomationSchedules.ps1
             pwsh -File ./PowerShellActions/installAutomationModules.ps1
+
+       - name: Set Up Automation Schedules
+         run: |          
+            pwsh -File ./PowerShellActions/setUpAutomationSchedules.ps1
       
 
 

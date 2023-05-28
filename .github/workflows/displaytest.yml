@@ -32,7 +32,12 @@ jobs:
          with:
           creds: ${{ env.AzureCreds }}
           enable-AzPSSession: true
-         
+          
+       - name: Set Logic App - App Settings
+         run: |          
+          chmod +x "./AzActions/manageLogicAppSettings.sh"
+          ./AzActions/manageLogicAppSettings.sh             
+   
        
        - name: Install Modules 
          run: |
