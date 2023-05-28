@@ -11,7 +11,6 @@
                                     "name": "VMs To Query",
                                     "value": "@concat('Resource =~ \"',replace(substring(item(),indexOf(item(),'virtualMachines/')),'virtualMachines/',''),'\"')"
                                 },
-                                "runAfter": {},
                                 "type": "AppendToStringVariable"
                             },
                             "Set_variable": {
@@ -34,7 +33,6 @@
                                         "name": "VMs To Query",
                                         "value": "@concat(' or Resource =~ \"',replace(substring(item(),indexOf(item(),'virtualMachines/')),'virtualMachines/',''),'\"')"
                                     },
-                                    "runAfter": {},
                                     "type": "AppendToStringVariable"
                                 }
                             }
@@ -49,7 +47,6 @@
                                 }
                             ]
                         },
-                        "runAfter": {},
                         "type": "If"
                     }
                 },
@@ -104,7 +101,7 @@
                     "body": " UpdateSummary | where ( @{variables('VMs To Query')}) | project Resource, Computer, tostring(CriticalUpdatesMissing), tostring(SecurityUpdatesMissing), tostring(OtherUpdatesMissing) ,TimeGenerated\n| summarize arg_max(TimeGenerated,*) by Resource  \n",
                     "host": {
                         "connection": {
-                            "referenceName": "azuremonitorlogs"
+                            "referenceName": "azuremonitorlogs-2"
                         }
                     },
                     "method": "post",
@@ -137,7 +134,7 @@
                         "Body": "<p><br>\n@{base64ToString(body('Run_query_and_visualize_results')?['body'])}</p>",
                         "Importance": "Normal",
                         "Subject": "Update Summary For Run ID  : @{body('Parse_JSON')?['runId']}",
-                        "To": "alvingeorge@gmail.com"
+                        "To": "@{appsetting('EmailRecipients')}"
                     },
                     "host": {
                         "connection": {
