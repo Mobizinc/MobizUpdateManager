@@ -69,10 +69,35 @@ jobs:
          run: |          
           chmod +x "./AzActions/manageRunbooks.sh"
           ./AzActions/manageRunbooks.sh   
+
        - name: Setting Permissions
          run: |          
           chmod +x "./AzActions/permissions.sh"
-          ./AzActions/permissions.sh   
+          ./AzActions/permissions.sh 
+
+       - name: Set Logic App - App Settings
+         run: |          
+          chmod +x "./AzActions/manageLogicAppSettings.sh"
+          ./AzActions/manageLogicAppSettings.sh             
+
+       - name: Install Modules 
+         run: |
+                pwsh -Command "Install-Module -Name Az -Force -AllowClobber"
+                pwsh -Command "Uninstall-AzureRm"
+                pwsh -Command "Import-Module -Name Az"
+                
+       - name: Azure PowerShell Login
+         uses: azure/login@v1
+         with:
+            creds: ${{ env.AzureCreds }}
+            
+       - name: Install Automation Modules
+         run: |
+            pwsh -File ./PowerShellActions/installAutomationModules.ps1
+
+       - name: Set Up Automation Schedules
+         run: |          
+            pwsh -File ./PowerShellActions/setUpAutomationSchedules.ps1
       
 
 
