@@ -1,5 +1,4 @@
-1.Schedule set and linking "MonitorScheduleHourly" to runbook
-2.Import azTable ,runtime 5.1 to automation account
-3.Create separate storage account for logic app
-4.Fetch KB details based VMs
-5.Email is referenced from app settings .Add app setting "EmailRecipients" and provide email in ; separated values.
+1.Create separate storage account for logic app
+2.Fetch KB details based VMs
+3.Set up connections for logic app
+
