@@ -558,7 +558,6 @@
             "apiVersion": "2022-09-01",
             "name": "[concat(parameters('StorageAccountName'), '/default/scheduleTracker')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/tableServices', parameters('StorageAccountName'), 'default')]",
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountName'))]"
             ],
             "properties": {}
