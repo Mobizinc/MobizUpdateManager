@@ -73,6 +73,22 @@ jobs:
          run: |          
           chmod +x "./AzActions/permissions.sh"
           ./AzActions/permissions.sh   
+
+       - name: Install Modules 
+         run: |
+                pwsh -Command "Install-Module -Name Az -Force -AllowClobber"
+                pwsh -Command "Uninstall-AzureRm"
+                pwsh -Command "Import-Module -Name Az"
+                
+       - name: Azure PowerShell Login
+         uses: azure/login@v1
+         with:
+            creds: ${{ env.AzureCreds }}
+            
+       - name: Run Post Deployment PowerShell scripts
+         run: |
+            pwsh -File ./PowerShellActions/setUpAutomationSchedules.ps1
+            pwsh -File ./PowerShellActions/installAutomationModules.ps1
       
 
 
