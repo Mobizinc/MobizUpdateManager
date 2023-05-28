@@ -212,20 +212,7 @@
             }
 
 
-        },        
-        {
-            "type": "Microsoft.Automation/automationAccounts/modules",
-            "apiVersion": "2022-08-08",
-            "name": "[concat(parameters('AutomationAccountName'), '/AzTable')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
-            ],
-            "properties": {
-                "contentLink": {
-                    "uri":"https://www.powershellgallery.com/api/v2/package/Az/10.0.0"
-                }
-            }
-        },
+        }, 
         {
             "type": "Microsoft.Automation/automationAccounts/runbooks",
             "apiVersion": "2022-08-08",
