@@ -1,0 +1,4 @@
+1.Schedule set and linking "MonitorScheduleHourly" to runbook
+2.Import azTable ,runtime 5.1 to automation account
+3.Create separate storage account for logic app
+4.Fetch KB details 

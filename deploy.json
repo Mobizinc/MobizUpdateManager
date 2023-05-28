@@ -189,7 +189,7 @@
                     "properties": {
                         "value":  "\"scheduleTracker\""
                     }
-                },
+                }
 
 
             ]
@@ -212,7 +212,7 @@
             }
 
 
-        },
+        }, 
         {
             "type": "Microsoft.Automation/automationAccounts/runbooks",
             "apiVersion": "2022-08-08",
@@ -539,6 +539,15 @@
             "sku": {
                 "name": "Standard"
             }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('StorageAccountName'), '/default/scheduleTracker')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountName'))]"
+            ],
+            "properties": {}
         }
 
     ]
