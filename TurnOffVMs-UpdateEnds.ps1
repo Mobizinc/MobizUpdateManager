@@ -40,6 +40,8 @@ param(
     [string]$SoftwareUpdateConfigurationRunContext
 )
 
+$defaultUserMIAppID=Get-AutomationVariable -Name "defaultUserMIAppID"
+
 #region BoilerplateAuthentication
 #This requires a RunAs account
 # $ServicePrincipalConnection = Get-AutomationConnection -Name 'AzureRunAsConnection'
@@ -50,7 +52,7 @@ param(
 #     -ApplicationId $ServicePrincipalConnection.ApplicationId `
 #     -CertificateThumbprint $ServicePrincipalConnection.CertificateThumbprint
 
-$AzureContext = (Connect-AzAccount -Identity ).context
+$AzureContext = (Connect-AzAccount -Identity $defaultUserMIAppID ).context
 $AzureContext = Set-AzContext -SubscriptionName $AzureContext.Subscription -DefaultProfile $AzureContext
 
 #If you wish to use the run context, it must be converted from JSON
