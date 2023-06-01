@@ -5,12 +5,13 @@ $scheduleMonitorQueue=Get-AutomationVariable -Name "UpdateMgrScheduleMonitorQueu
 $automationAccountName=Get-AutomationVariable -Name "UpdateMgrAutomationAccountName"
 $scheduleMonitorTable=Get-AutomationVariable -Name "UpdateMgrMonitorTable"
 $hoursToMonitor=Get-AutomationVariable -Name "UpdateMgrMonitorScope"
+$defaultUserMIAppID=Get-AutomationVariable -Name "defaultUserMIAppID"
 
 $StartDate=(GET-DATE)
 
 
 #Set context and get Schedules
-$AzureContext = (Connect-AzAccount -Identity ).context
+$AzureContext = (Connect-AzAccount -Identity $defaultUserMIAppID ).context
 $AzureContext = Set-AzContext -SubscriptionName $AzureContext.Subscription -DefaultProfile $AzureContext
 $schedules=Get-AzAutomationSoftwareUpdateConfiguration -AutomationAccountName $automationAccountName  -ResourceGroupName $storageRGName
 
