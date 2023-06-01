@@ -40,7 +40,7 @@ This script reads the name of machines that were started by Update Management vi
 param(
     [string]$SoftwareUpdateConfigurationRunContext
 )
-
+$defaultUserMIAppID=Get-AutomationVariable -Name "defaultUserMIAppID"
 
 #region BoilerplateAuthentication
 #This requires a RunAs account
@@ -52,7 +52,7 @@ param(
 #     -ApplicationId $ServicePrincipalConnection.ApplicationId `
 #     -CertificateThumbprint $ServicePrincipalConnection.CertificateThumbprint
 
-$AzureContext = (Connect-AzAccount -Identity).context
+$AzureContext = (Connect-AzAccount -Identity $defaultUserMIAppID ).context
 $AzureContext = Set-AzContext -SubscriptionName $AzureContext.Subscription -DefaultProfile $AzureContext
 
 #endregion BoilerplateAuthentication
