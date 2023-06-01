@@ -11,7 +11,7 @@ $StartDate=(GET-DATE)
 
 
 #Set context and get Schedules
-$AzureContext = (Connect-AzAccount -Identity $defaultUserMIAppID ).context
+$AzureContext = (Connect-AzAccount -Identity -AccountId  $defaultUserMIAppID ).context
 $AzureContext = Set-AzContext -SubscriptionName $AzureContext.Subscription -DefaultProfile $AzureContext
 $schedules=Get-AzAutomationSoftwareUpdateConfiguration -AutomationAccountName $automationAccountName  -ResourceGroupName $storageRGName
 
@@ -51,7 +51,7 @@ foreach ($schedule in $schedules)
         if($scopes.length -gt 0){
 
             $vmIds=@()
-            $AzureContext = (Connect-AzAccount -Identity ).context
+            $AzureContext = (Connect-AzAccount -Identity -AccountId  $defaultUserMIAppID ).context
 
                 $subs = Get-AzSubscription
 

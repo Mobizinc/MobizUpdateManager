@@ -52,7 +52,7 @@ $defaultUserMIAppID=Get-AutomationVariable -Name "defaultUserMIAppID"
 #     -ApplicationId $ServicePrincipalConnection.ApplicationId `
 #     -CertificateThumbprint $ServicePrincipalConnection.CertificateThumbprint
 
-$AzureContext = (Connect-AzAccount -Identity $defaultUserMIAppID ).context
+$AzureContext = (Connect-AzAccount -Identity -AccountId  $defaultUserMIAppID ).context
 $AzureContext = Set-AzContext -SubscriptionName $AzureContext.Subscription -DefaultProfile $AzureContext
 
 #If you wish to use the run context, it must be converted from JSON
@@ -148,7 +148,7 @@ $storageAccountName=Get-AutomationVariable -Name "UpdateMgrStorageAccount"
 $storageQueueName=Get-AutomationVariable -Name "UpdateMgrSummaryQueue"
 
 #Set Context
-$AzureContext = (Connect-AzAccount -Identity ).context
+$AzureContext = (Connect-AzAccount -Identity -AccountId  $defaultUserMIAppID ).context
 $AzureContext = Set-AzContext -SubscriptionName $AzureContext.Subscription -DefaultProfile $AzureContext
 
 #Get Key and set Storage Context

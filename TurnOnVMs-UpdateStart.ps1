@@ -52,7 +52,7 @@ $defaultUserMIAppID=Get-AutomationVariable -Name "defaultUserMIAppID"
 #     -ApplicationId $ServicePrincipalConnection.ApplicationId `
 #     -CertificateThumbprint $ServicePrincipalConnection.CertificateThumbprint
 
-$AzureContext = (Connect-AzAccount -Identity $defaultUserMIAppID ).context
+$AzureContext = (Connect-AzAccount -Identity -AccountId $defaultUserMIAppID ).context
 $AzureContext = Set-AzContext -SubscriptionName $AzureContext.Subscription -DefaultProfile $AzureContext
 
 #endregion BoilerplateAuthentication

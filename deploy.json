@@ -118,7 +118,10 @@
                         "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
                     ],
                     "properties": {
-                        "value": "[concat('\"',reference([parameters('UserManagedIdentityName')]).identityObjectId ,'\"')]"
+                        "value": "[concat('\"',reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('UserManagedIdentityName'))).clientId ,'\"')]"
+
+                        
+
                     }
                 },
                 {
@@ -561,11 +564,6 @@
             "properties": {}
         }
 
-    ],
-    "outputs": {
-    "identityObjectId": {
-      "type": "string",
-      "value": "[reference("[parameters('UserManagedIdentityName')]", '2018-11-30', 'Full').objectId]"
-    }
-  }
+    ]
+  
 }
