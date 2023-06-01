@@ -113,6 +113,17 @@
                 {
                     "type": "variables",
                     "apiVersion": "2015-10-31",
+                    "name": "defaultUserMIAppID",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
+                    ],
+                    "properties": {
+                        "value": "[concat('\"',reference([parameters('UserManagedIdentityName')]).identityObjectId ,'\"')]"
+                    }
+                },
+                {
+                    "type": "variables",
+                    "apiVersion": "2015-10-31",
                     "name": "UpdateMgrAutomationAccountName",
                     "dependsOn": [
                         "[resourceId('Microsoft.Automation/automationAccounts', parameters('AutomationAccountName'))]"
@@ -550,5 +561,11 @@
             "properties": {}
         }
 
-    ]
+    ],
+    "outputs": {
+    "identityObjectId": {
+      "type": "string",
+      "value": "[reference("[parameters('UserManagedIdentityName')]", '2018-11-30', 'Full').objectId]"
+    }
+  }
 }
