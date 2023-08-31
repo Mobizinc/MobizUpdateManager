@@ -10,7 +10,7 @@ env:
 jobs:
   deploy-and-run:
     runs-on: ubuntu-latest
-    environment: qa
+    environment: savista-uat
     steps:
        - name: Checkout repository
          uses: actions/checkout@v2
