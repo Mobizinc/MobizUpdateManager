@@ -3,22 +3,22 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "LogAnalyticsWorksSpaceName": {
-            "value": "mobizupdatemgr-dev-la135"
+            "value": "mobizsavista-updatemgr-uat-la"
         },
         "AutomationAccountName": {
-            "value": "mobizupdatemgr-dev-aa35"
+            "value": "mobizsavista-updatemgr-dev-aa"
         },
         "AppServicePlanForLogicAppName": {
-            "value": "generic-logicapp-asp35"
+            "value": "mobizsavista-logicapp-asp"
         },
         "LogicAppName": {
-            "value": "mobizupdatemgr-dev-logicapp35"
+            "value": "mobizsavista-updatemgr-dev-logicapp"
         },
         "StorageAccountName": {
-            "value": "mobizupdatemgrdevsa35"
+            "value": "mbzvstupdmgruat"
         },
          "UserManagedIdentityName": {
-            "value": "mobizupdatemgr-qa-mi"
+            "value": "mobizsavista-updatemgr-qa-mi"
         }
     }
 }
