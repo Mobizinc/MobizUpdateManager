@@ -30,14 +30,14 @@
         },
          "currentTime": {
               "type": "string",
-              "defaultValue": "[utcNow()]"
+              "defaultValue": "[utcNow('u')]"
             }
         
         
     },
   "variables": {
                     
-                    "timePlusTenMinutes": "[addMinutes(parameters('currentTime'), 10)]"
+                    "timePlusTenMinutes": "[dateTimeAdd(parameters('currentTime'), 'PT1H')]"
                   },
     "resources": [
         
