@@ -21,7 +21,7 @@ $schedules=Get-AzAutomationSoftwareUpdateConfiguration -AutomationAccountName $a
 $key = (Get-AzStorageAccountKey -ResourceGroupName $storageRGName -Name $storageAccountName)[0].Value
 $updateMgrStoragecontext = New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $key
 $queue = Get-AzStorageQueue -Name $scheduleMonitorQueue -Context $updateMgrStoragecontext
-$storageTable = Get-AzStorageTable –Name $scheduleMonitorTable –Context $updateMgrStoragecontext
+$storageTable = Get-AzStorageTable -Name $scheduleMonitorTable -Context $updateMgrStoragecontext
 $cloudTable = $storageTable.CloudTable
 
 foreach ($schedule in $schedules)
