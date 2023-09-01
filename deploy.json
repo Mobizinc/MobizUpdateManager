@@ -31,7 +31,10 @@
         
         
     },
-    "variables": {},
+  "variables": {
+                    "currentTime": "[utcNow('o')]",
+                    "timePlusTenMinutes": "[addMinutes(variables('currentTime'), 10)]"
+                  },
     "resources": [
         
         {
@@ -269,10 +272,7 @@
                 "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('AutomationAccountName'), 'TurnOnVMs-UpdateStart')]",
                 "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('AutomationAccountName'), 'TurnOffVMs-UpdateEnds')]"
             ],
-            "variables": {
-                    "currentTime": "[utcNow('o')]",
-                    "timePlusTenMinutes": "[addMinutes(variables('currentTime'), 10)]"
-                  },
+           
                 "properties": {
                 "updateConfiguration": {
                     "operatingSystem": "Windows",
