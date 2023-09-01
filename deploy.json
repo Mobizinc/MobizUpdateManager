@@ -317,7 +317,7 @@
                         "monthlyOccurrences": []
                     },
                     "timeZone": "America/New_York",
-                    "startTime": "2023-06-24T17:19:00-04:00",
+                    "startTime": "[addMinutes(utcNow('o'), 10)]",
                     "expiryTime": "9999-12-31T18:59:00-05:00",
                     "interval": 2,
                     "frequency": "Week",
