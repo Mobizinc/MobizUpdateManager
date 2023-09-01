@@ -492,7 +492,7 @@
                 "publicNetworkAccess": "Disabled",
                 "allowCrossTenantReplication": true,
                 "minimumTlsVersion": "TLS1_2",
-                "allowBlobPublicAccess": true,
+                "allowBlobPublicAccess": false,
                 "allowSharedKeyAccess": true,
                 "networkAcls": {
                     "bypass": "AzureServices",
