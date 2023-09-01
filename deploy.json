@@ -283,7 +283,7 @@
                         "azureQueries": [
                             {
                                 "scope": [
-                                    "/"
+                                    "[concat('/subscriptions/', subscription().subscriptionId)]"
                                 ],
                                 "tagSettings": {
                                     "tags": {
