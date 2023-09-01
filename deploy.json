@@ -269,7 +269,11 @@
                 "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('AutomationAccountName'), 'TurnOnVMs-UpdateStart')]",
                 "[resourceId('Microsoft.Automation/automationAccounts/runbooks',parameters('AutomationAccountName'), 'TurnOffVMs-UpdateEnds')]"
             ],
-            "properties": {
+            "variables": {
+                    "currentTime": "[utcNow('o')]",
+                    "timePlusTenMinutes": "[addMinutes(variables('currentTime'), 10)]"
+                  },
+                "properties": {
                 "updateConfiguration": {
                     "operatingSystem": "Windows",
                     "windows": {
@@ -317,7 +321,7 @@
                         "monthlyOccurrences": []
                     },
                     "timeZone": "America/New_York",
-                    "startTime": "[addMinutes(utcNow('o'), 10)]",
+                    "startTime": "[variables('timePlusTenMinutes')]",
                     "expiryTime": "9999-12-31T18:59:00-05:00",
                     "interval": 2,
                     "frequency": "Week",
