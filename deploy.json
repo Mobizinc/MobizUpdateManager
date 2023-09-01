@@ -283,7 +283,7 @@
                         "azureQueries": [
                             {
                                 "scope": [
-                                    "/subscriptions/158d9f92-ec1e-433e-8388-6f7157282c13"
+                                    "/"
                                 ],
                                 "tagSettings": {
                                     "tags": {
