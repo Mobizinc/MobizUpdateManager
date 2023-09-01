@@ -27,13 +27,17 @@
          "UserManagedIdentityName": {
             "defaultValue": "mobizupdatemgr-dev-mi",
             "type": "String"
-        }
+        },
+         "currentTime": {
+              "type": "string",
+              "defaultValue": "[utcNow()]"
+            }
         
         
     },
   "variables": {
-                    "currentTime": "[utcNow('o')]",
-                    "timePlusTenMinutes": "[addMinutes(variables('currentTime'), 10)]"
+                    
+                    "timePlusTenMinutes": "[addMinutes(parameters('currentTime'), 10)]"
                   },
     "resources": [
         
