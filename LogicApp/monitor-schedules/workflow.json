@@ -2,21 +2,258 @@
     "definition": {
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
-            "Create_HTML_table": {
-                "inputs": {
-                    "format": "HTML",
-                    "from": "@body('Parse_JSON')?['vmIds']"
+            "Condition": {
+                "actions": {
+                    "Run_query_and_visualize_results_For_KBID": {
+                        "inputs": {
+                            "body": "Update | where @{join(variables('KBIDsToQuery'),' or ')} | summarize hint.strategy=partitioned arg_max(TimeGenerated, *) by  KBID  | order by TimeGenerated desc | project KBID,Title",
+                            "host": {
+                                "connection": {
+                                    "referenceName": "azuremonitorlogs-3"
+                                }
+                            },
+                            "method": "post",
+                            "path": "/visualizeQuery",
+                            "queries": {
+                                "resourcegroups": "@{appsetting('ResourceGroup')}",
+                                "resourcename": "@{appsetting('WorkspaceName')}",
+                                "resourcetype": "Log Analytics Workspace",
+                                "subscriptions": "@{appsetting('SubscriptionId')}",
+                                "timerange": "Last 7 days",
+                                "visType": "Html Table"
+                            }
+                        },
+                        "type": "ApiConnection"
+                    },
+                    "Send_an_email_(V2)_-_KBID_Scenario": {
+                        "inputs": {
+                            "body": {
+                                "Body": "<style>\n#tblVMs thead {\nbackground-color: DarkGray;\n}\n#tblVMs table {border: 1px solid black;border-collapse:collapse;font-family:\"Segoe UI\";font-size:12px;}\n#tblVMs td {border: 1px solid black;padding: 6px;}\n#tblVMs th {border: 1px solid black;padding: 6px;font-weight: initial;}\n</style>\n\n<br>Targetted VMs<br>\n<div id=\"tblVMs\">\n@{body('Create_HTML_table_with_KBID')}</div>\n<br>KBID Details<br>\n@{base64ToString(body('Run_query_and_visualize_results_For_KBID')?['body'])}\n<br>",
+                                "Importance": "Normal",
+                                "Subject": "Upcoming Update Management Schedule -@{body('Parse_JSON')?['scope']}hr : @{body('Parse_JSON')?['name']}   at @{body('Parse_JSON')?['nextRun']}",
+                                "To": "@{appsetting('EmailRecipients')}"
+                            },
+                            "host": {
+                                "connection": {
+                                    "referenceName": "office365-2"
+                                }
+                            },
+                            "method": "post",
+                            "path": "/v2/Mail"
+                        },
+                        "runAfter": {
+                            "Run_query_and_visualize_results_For_KBID": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "type": "ApiConnection"
+                    }
+                },
+                "else": {
+                    "actions": {
+                        "Send_an_email_(V2)-_NO_KBID_Scenario": {
+                            "inputs": {
+                                "body": {
+                                    "Body": "<style>\n#tblVMs thead {\nbackground-color: DarkGray;\n}\n#tblVMs table {border: 1px solid black;border-collapse:collapse;font-family:\"Segoe UI\";font-size:12px;}\n#tblVMs td {border: 1px solid black;padding: 6px;}\n#tblVMs th {border: 1px solid black;padding: 6px;font-weight: initial;}\n</style>\n\n<br>Targetted VMs<br>\n<div id=\"tblVMs\">\n@{body('Create_HTML_table_with_KBID')}</div>",
+                                    "Importance": "Normal",
+                                    "Subject": "Upcoming Update Management Schedule -@{body('Parse_JSON')?['scope']}hr : @{body('Parse_JSON')?['name']}   at @{body('Parse_JSON')?['nextRun']}",
+                                    "To": "@{appsetting('EmailRecipients')}"
+                                },
+                                "host": {
+                                    "connection": {
+                                        "referenceName": "office365-2"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/v2/Mail"
+                            },
+                            "type": "ApiConnection"
+                        }
+                    }
+                },
+                "expression": {
+                    "and": [
+                        {
+                            "greater": [
+                                "@length(variables('KBIDsToQuery'))",
+                                0
+                            ]
+                        }
+                    ]
                 },
                 "runAfter": {
-                    "Parse_JSON": [
-                        "Succeeded"
+                    "Create_HTML_table_with_KBID": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "type": "If"
+            },
+            "Create_HTML_table_with_KBID": {
+                "inputs": {
+                    "format": "HTML",
+                    "from": "@variables('TargetVMs')"
+                },
+                "runAfter": {
+                    "For_each": [
+                        "SUCCEEDED"
                     ]
                 },
                 "type": "Table"
             },
+            "For_each": {
+                "actions": {
+                    "Append_to_array_variable_Targeted_VMs": {
+                        "inputs": {
+                            "name": "TargetVMs",
+                            "value": {
+                                "KBID": "@{join(variables('VMKBID'),',')}",
+                                "Machine Name": "@{item()['machineName']}",
+                                "Resource Group": "@{item()['resourceGroup']}",
+                                "Subscription": "@{item()['subscription']}"
+                            }
+                        },
+                        "runAfter": {
+                            "For_each_KB": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "type": "AppendToArrayVariable"
+                    },
+                    "For_each_KB": {
+                        "actions": {
+                            "Append_to_array_variable": {
+                                "inputs": {
+                                    "name": "KBIDsToQuery",
+                                    "value": "@concat('KBID=~ \"',item()['KBID'],'\"')"
+                                },
+                                "runAfter": {
+                                    "Append_to_array_variable_VMKBID": [
+                                        "SUCCEEDED"
+                                    ]
+                                },
+                                "type": "AppendToArrayVariable"
+                            },
+                            "Append_to_array_variable_VMKBID": {
+                                "inputs": {
+                                    "name": "VMKBID",
+                                    "value": "@item()['KBID']"
+                                },
+                                "type": "AppendToArrayVariable"
+                            }
+                        },
+                        "foreach": "@body('Run_query_and_list_results')?['value']",
+                        "runAfter": {
+                            "Run_query_and_list_results": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "runtimeConfiguration": {
+                            "concurrency": {
+                                "repetitions": 1
+                            }
+                        },
+                        "trackedProperties": {},
+                        "type": "Foreach"
+                    },
+                    "Run_query_and_list_results": {
+                        "inputs": {
+                            "body": "Update | where Resource contains \"@{item()['machineName']}\" and UpdateState =~ \"Needed\"| summarize hint.strategy=partitioned arg_max(TimeGenerated, *) by  KBID | project KBID",
+                            "host": {
+                                "connection": {
+                                    "referenceName": "azuremonitorlogs"
+                                }
+                            },
+                            "method": "post",
+                            "path": "/queryData",
+                            "queries": {
+                                "resourcegroups": "@{appsetting('ResourceGroup')}",
+                                "resourcename": "@{appsetting('WorkspaceName')}",
+                                "resourcetype": "Log Analytics Workspace",
+                                "subscriptions": "@{appsetting('SubscriptionId')}",
+                                "timerange": "Last 7 days"
+                            }
+                        },
+                        "runAfter": {
+                            "Set_variable": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "type": "ApiConnection"
+                    },
+                    "Set_variable": {
+                        "inputs": {
+                            "name": "VMKBID",
+                            "value": []
+                        },
+                        "type": "SetVariable"
+                    }
+                },
+                "foreach": "@body('Parse_JSON')?['vmIds']",
+                "runAfter": {
+                    "Initialize_variable_KBIDsToQuery": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "runtimeConfiguration": {
+                    "concurrency": {
+                        "repetitions": 1
+                    }
+                },
+                "type": "Foreach"
+            },
+            "Initialize_variable_KBIDsToQuery": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "KBIDsToQuery",
+                            "type": "array",
+                            "value": []
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Initialize_variable_VMKBID": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Initialize_variable_TargetVMs": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "TargetVMs",
+                            "type": "array"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Parse_JSON": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Initialize_variable_VMKBID": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "VMKBID",
+                            "type": "array",
+                            "value": []
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Initialize_variable_TargetVMs": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
             "Parse_JSON": {
                 "inputs": {
-                    "content": "@triggerOutputs()?['body']?['messageText']",
+                    "content": "@triggerBody()?['messageText']",
                     "schema": {
                         "properties": {
                             "name": {
@@ -56,29 +293,6 @@
                 },
                 "runAfter": {},
                 "type": "ParseJson"
-            },
-            "Send_an_email_(V2)": {
-                "inputs": {
-                    "body": {
-                        "Body": "<p>Targetted VMs<br>\n@{body('Create_HTML_table')}</p>",
-                        "Importance": "Normal",
-                        "Subject": "Upcoming Update Management Schedule -@{body('Parse_JSON')?['scope']}hr : @{body('Parse_JSON')?['name']}   at @{body('Parse_JSON')?['nextRun']}",
-                        "To": "@{appsetting('EmailRecipients')}"
-                    },
-                    "host": {
-                        "connection": {
-                            "referenceName": "office365"
-                        }
-                    },
-                    "method": "post",
-                    "path": "/v2/Mail"
-                },
-                "runAfter": {
-                    "Create_HTML_table": [
-                        "Succeeded"
-                    ]
-                },
-                "type": "ApiConnection"
             }
         },
         "contentVersion": "1.0.0.0",
@@ -99,5 +313,5 @@
             }
         }
     },
-    "kind": "Stateless"
+    "kind": "Stateful"
 }
