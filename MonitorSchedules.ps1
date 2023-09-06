@@ -29,7 +29,7 @@ foreach ($schedule in $schedules)
   #Check for next run range- filter
   $schedulesToCommunicate=Get-AzAutomationSoftwareUpdateConfiguration -AutomationAccountName $automationAccountName  -ResourceGroupName $storageRGName -Name $schedule.Name
   $scheduleTimeSpan= NEW-TIMESPAN -Start $StartDate -End $schedule.ScheduleConfiguration.NextRun.UtcDateTime
-  $nextRun= ($schedule.ScheduleConfiguration.NextRun.UtcDateTime).ToString("dd/MM/yyyy HH:mm:ss")
+  $nextRun= ($schedule.ScheduleConfiguration.NextRun.UtcDateTime).ToString("MM/dd/yyyy HH:mm:ss")
 
   $scopes=@()
   $scheduledScanScopes=$hoursToMonitor.split(',')
@@ -43,6 +43,7 @@ foreach ($schedule in $schedules)
                                         $scopes+=$nextRunScope
                                     }else{
                                         Write-Output " $($schedule.Name) for next run $($nextRun) already communicated with scope $($nextRunScope) "
+                                       
                                     }
             }
   }
@@ -52,14 +53,16 @@ foreach ($schedule in $schedules)
 
             $vmIds=@()
             $AzureContext = (Connect-AzAccount -Identity -AccountId  $defaultUserMIAppID ).context
-
+             
                 $subs = Get-AzSubscription
-
+               Write-Output "Subs $($subs.Length) $defaultUserMIAppID"
                 Foreach ($sub in $subs)
                     {
+
                         $subName = $sub.Name
-                    
-                        select-AzSubscription $sub | Out-Null
+                     Write-Output "Subname $subName"
+                        Select-AzSubscription $sub 
+                        Get-AzVM | select name,resourceGroupName,tags
                         $vms = Get-AzVM | select name,resourceGroupName,tags
                             Foreach ($vm in $vms)
                             {
