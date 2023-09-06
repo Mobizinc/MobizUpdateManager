@@ -60,13 +60,16 @@ $context = ConvertFrom-Json  $SoftwareUpdateConfigurationRunContext
 $runId = "PrescriptContext" + $context.SoftwareUpdateConfigurationRunId
 
 Write-Output "SoftwareUpdateConfigurationRunId : $($runId)"
+
+
 #Retrieve the automation variable, which we named using the runID from our run context. 
 #See: https://docs.microsoft.com/en-us/azure/automation/automation-variables#activities
 $variable = Get-AutomationVariable -Name $runId
+Write-Output "variable value... $variable"
 if (!$variable) 
 {
     Write-Output "No machines to turn off"
-    return
+    #return
 }
 
 #https://github.com/azureautomation/runbooks/blob/master/Utility/ARM/Find-WhoAmI
@@ -81,15 +84,15 @@ foreach ($Automation in $AutomationResource)
     if (!([string]::IsNullOrEmpty($Job)))
     {
         $ResourceGroup = $Job.ResourceGroupName
-        $AutomationAccount = $Job.AutomationAccountName
+        $ResourceGroup = $Job.AutomationAccountName
         break;
     }
 }
-
+Write-Output "resourcegrpu $ResourceGroup, automatac: $ResourceGroup"
 $vmIds = $variable -split ","
 $stoppableStates = "starting", "running"
 $jobIDs= New-Object System.Collections.Generic.List[System.Object]
-
+Write-Output "jobids $jobIDs"
 #This script can run across subscriptions, so we need unique identifiers for each VMs
 #Azure VMs are expressed by:
 # subscription/$subscriptionID/resourcegroups/$resourceGroup/providers/microsoft.compute/virtualmachines/$name
@@ -157,14 +160,16 @@ $key = (Get-AzStorageAccountKey -ResourceGroupName $storageRGName -Name $storage
 $updateMgrStoragecontext = New-AzStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $key
 
 $queue = Get-AzStorageQueue -Name $storageQueueName -Context $updateMgrStoragecontext
-
+ Write-Output "connected to storage "
 $updateInfo=@{
+    scheduleName=$context.SoftwareUpdateConfigurationName
     runId=$context.SoftwareUpdateConfigurationRunId
     virtualMachines=$context.SoftwareUpdateConfigurationSettings.AzureVirtualMachines
 }
 
 $updateInfo =$updateInfo | ConvertTo-Json
-
+Write-Output "json update info $updateInfo "
 $queueMessage = [Microsoft.Azure.Storage.Queue.CloudQueueMessage]::new($updateInfo)
 
 $queue.CloudQueue.AddMessageAsync($queueMessage)
+Write-Output "message added to queue $queueMessage "
