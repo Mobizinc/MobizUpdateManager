@@ -4,73 +4,51 @@
         "actions": {
             "For_each": {
                 "actions": {
-                    "Condition": {
-                        "actions": {
-                            "Append_to_VMS_To_Query_-_First": {
-                                "inputs": {
-                                    "name": "VMs To Query",
-                                    "value": "@concat('Resource =~ \"',replace(substring(item(),indexOf(item(),'virtualMachines/')),'virtualMachines/',''),'\"')"
-                                },
-                                "type": "AppendToStringVariable"
-                            },
-                            "Set_variable": {
-                                "inputs": {
-                                    "name": "IsFirstRecord",
-                                    "value": "@false"
-                                },
-                                "runAfter": {
-                                    "Append_to_VMS_To_Query_-_First": [
-                                        "Succeeded"
-                                    ]
-                                },
-                                "type": "SetVariable"
-                            }
+                    "Append_to_VMNames_to_Array": {
+                        "inputs": {
+                            "name": "VMNamesArr",
+                            "value": "@concat('Resource =~ \"',replace(substring(item(),indexOf(item(),'virtualMachines/')),'virtualMachines/',''),'\"')"
                         },
-                        "else": {
-                            "actions": {
-                                "Append_to_VMS_To_Query_": {
-                                    "inputs": {
-                                        "name": "VMs To Query",
-                                        "value": "@concat(' or Resource =~ \"',replace(substring(item(),indexOf(item(),'virtualMachines/')),'virtualMachines/',''),'\"')"
-                                    },
-                                    "type": "AppendToStringVariable"
-                                }
-                            }
-                        },
-                        "expression": {
-                            "and": [
-                                {
-                                    "equals": [
-                                        "@variables('IsFirstRecord')",
-                                        "@true"
-                                    ]
-                                }
-                            ]
-                        },
-                        "type": "If"
+                        "type": "AppendToArrayVariable"
                     }
                 },
                 "foreach": "@variables('VMs With ID')",
+                "runAfter": {
+                    "Initialize_variable": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "type": "Foreach"
+            },
+            "Initialize_variable": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "VMNamesArr",
+                            "type": "array"
+                        }
+                    ]
+                },
                 "runAfter": {
                     "Is_First_Record": [
                         "Succeeded"
                     ]
                 },
-                "type": "Foreach"
+                "type": "InitializeVariable"
             },
             "Is_First_Record": {
                 "inputs": {
                     "variables": [
                         {
                             "name": "IsFirstRecord",
-                            "type": "boolean",
-                            "value": "@true"
+                            "type": "integer",
+                            "value": 0
                         }
                     ]
                 },
                 "runAfter": {
                     "VMS_To_Query": [
-                        "Succeeded"
+                        "SUCCEEDED"
                     ]
                 },
                 "type": "InitializeVariable"
@@ -81,6 +59,9 @@
                     "schema": {
                         "properties": {
                             "runId": {
+                                "type": "string"
+                            },
+                            "scheduleName": {
                                 "type": "string"
                             },
                             "virtualMachines": {
@@ -98,19 +79,19 @@
             },
             "Run_query_and_visualize_results": {
                 "inputs": {
-                    "body": " UpdateSummary | where ( @{variables('VMs To Query')}) | project Resource, Computer, tostring(CriticalUpdatesMissing), tostring(SecurityUpdatesMissing), tostring(OtherUpdatesMissing) ,TimeGenerated\n| summarize arg_max(TimeGenerated,*) by Resource  \n",
+                    "body": " UpdateSummary | where ( @{join(variables('VMNamesArr'),' or ')} ) | project Resource, Computer, tostring(CriticalUpdatesMissing), tostring(SecurityUpdatesMissing), tostring(OtherUpdatesMissing) ,TimeGenerated\n| summarize arg_max(TimeGenerated,*) by Resource  \n",
                     "host": {
                         "connection": {
-                            "referenceName": "azuremonitorlogs-2"
+                            "referenceName": "azuremonitorlogs-4"
                         }
                     },
                     "method": "post",
                     "path": "/visualizeQuery",
                     "queries": {
-                        "resourcegroups": "mobizupdatemgr-dev-rg",
-                        "resourcename": "mobizupdatemgr-dev-la1",
+                        "resourcegroups": "@{appsetting('ResourceGroup')}",
+                        "resourcename": "@{appsetting('WorkspaceName')}",
                         "resourcetype": "Log Analytics Workspace",
-                        "subscriptions": "158d9f92-ec1e-433e-8388-6f7157282c13",
+                        "subscriptions": "@{appsetting('SubscriptionId')}",
                         "timerange": "Last 7 days",
                         "visType": "Html Table"
                     }
@@ -133,7 +114,7 @@
                     "body": {
                         "Body": "<p><br>\n@{base64ToString(body('Run_query_and_visualize_results')?['body'])}</p>",
                         "Importance": "Normal",
-                        "Subject": "Update Summary For Run ID  : @{body('Parse_JSON')?['runId']}",
+                        "Subject": "Patch Schedule- @{body('Parse_JSON')?['scheduleName']}- Completed, Run ID  : @{body('Parse_JSON')?['runId']}",
                         "To": "@{appsetting('EmailRecipients')}"
                     },
                     "host": {
